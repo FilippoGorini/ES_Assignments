@@ -17,7 +17,7 @@ int main(void) {
     // Set pin E8 as input (button)
     TRISEbits.TRISE8 = 1;
     
-    bool prev_button_state = 1      // Button is assumed to be normally high (not pressed)
+    bool prev_button_state = 1;     // Button is assumed to be normally high (not pressed)
     bool led_state = 0;             // Initial LED state (off)
 
     while (1) {

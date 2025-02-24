@@ -18,7 +18,6 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>main3.c</itemPath>
-      <itemPath>main3_v2.c</itemPath>
     </logicalFolder>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>

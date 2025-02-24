@@ -51,17 +51,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=main3.c main3_v2.c
+SOURCEFILES_QUOTED_IF_SPACED=main3.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/main3.o ${OBJECTDIR}/main3_v2.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/main3.o.d ${OBJECTDIR}/main3_v2.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/main3.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/main3.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/main3.o ${OBJECTDIR}/main3_v2.o
+OBJECTFILES=${OBJECTDIR}/main3.o
 
 # Source Files
-SOURCEFILES=main3.c main3_v2.c
+SOURCEFILES=main3.c
 
 
 
@@ -95,24 +95,12 @@ ${OBJECTDIR}/main3.o: main3.c  .generated_files/flags/default/89ddd86d413182477b
 	@${RM} ${OBJECTDIR}/main3.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  main3.c  -o ${OBJECTDIR}/main3.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/main3.o.d"      -g -D__DEBUG   -mno-eds-warn  -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/main3_v2.o: main3_v2.c  .generated_files/flags/default/845cdfb3d305537c5ee4ec3f8f6bef485384fc7b .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/main3_v2.o.d 
-	@${RM} ${OBJECTDIR}/main3_v2.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  main3_v2.c  -o ${OBJECTDIR}/main3_v2.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/main3_v2.o.d"      -g -D__DEBUG   -mno-eds-warn  -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
-	
 else
 ${OBJECTDIR}/main3.o: main3.c  .generated_files/flags/default/60ca1ea035172a9f8ce0b35b362af35fbd26eaf .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/main3.o.d 
 	@${RM} ${OBJECTDIR}/main3.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  main3.c  -o ${OBJECTDIR}/main3.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/main3.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
-	
-${OBJECTDIR}/main3_v2.o: main3_v2.c  .generated_files/flags/default/47f62b08b334518ca7643ba4cdbcda51239b716d .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/main3_v2.o.d 
-	@${RM} ${OBJECTDIR}/main3_v2.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  main3_v2.c  -o ${OBJECTDIR}/main3_v2.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/main3_v2.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
 endif
 
