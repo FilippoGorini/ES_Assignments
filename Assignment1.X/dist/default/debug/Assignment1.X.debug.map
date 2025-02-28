@@ -223,9 +223,9 @@ __FUID0
 .comment
  *(.comment)
 
-.debug_info       0x000000        0x746
+.debug_info       0x000000        0x751
  *(.debug_info)
- .debug_info      0x000000        0x746 build/default/debug/main3.o
+ .debug_info      0x000000        0x751 build/default/debug/main3.o
  *(.gnu.linkonce.wi.*)
 
 .debug_abbrev     0x000000         0x9d
