@@ -1,0 +1,17 @@
+# Ignore MPLAB X auto-generated and build files for all projects
+*/dist/
+*/build/
+*/.generated_files/
+*/nbproject/
+*.o
+*.d
+*.elf
+*.hex
+*.cof
+*.map
+*.sdb
+*.dep
+
+# Ignore system-specific files
+.DS_Store  # macOS metadata
+Thumbs.db  # Windows metadata
