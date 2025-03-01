@@ -37,3 +37,12 @@ int tmr_wait_period(int timer) {
 
     return expired;
 }
+
+
+void tmr_wait_ms(int timer, int ms){   
+    if (ms <= 200){
+       tmr_setup_period(timer, ms);
+       tmr_wait_period(timer);
+       T1CONbits.TON = 0;
+    }
+}
