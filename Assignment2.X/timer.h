@@ -84,6 +84,7 @@
 
 void tmr_setup_period(int timer, int ms);
 int tmr_wait_period(int timer);
+void tmr_wait_ms(int timer, int ms);
 
 #endif // TIMER_H
 

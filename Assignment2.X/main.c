@@ -6,10 +6,14 @@
 
 int main() {
     TRISAbits.TRISA0 = 0;           // Set RA0 as output
-    tmr_setup_period(TIMER1, 200);  // Set Timer1 for 200 ms and start it
+    //tmr_setup_period(TIMER1, 200);  // Set Timer1 for 200 ms and start it
 
     while (1) {
-        LED = !LED;                 // Toggle LED state
-        tmr_wait_period(TIMER1);    // Wait until next 
+        //LED = !LED;                 // Toggle LED state
+        //tmr_wait_period(TIMER1);
+        LED = 1;
+        tmr_wait_ms(TIMER1, 20);
+        LED = 0;
+        tmr_wait_ms(TIMER1, 200);// Wait until next 
     }
 }
