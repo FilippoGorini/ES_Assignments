@@ -1,7 +1,7 @@
 #include "timer.h"
 #include <xc.h>
 
-// define LED variable for convenience
+// Define LED variable for convenience
 #define LED LATAbits.LATA0          // LD1 is connected to RA0
 
 int main() {

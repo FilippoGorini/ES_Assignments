@@ -1,26 +1,47 @@
 #include "timer.h"
 #include <xc.h>
 
-// The Fosc in our setup is 144 MHz. Therefore, the instruction cycle frequency
-// is Fcy = Fosc / 2 = 72 Mhz. In our application we will always use the timer 
-// in the first of the 4 functioning modes (see slide 15), which uses the 
-// peripheral clock Fp (which is the same as Fcy at 72 MHz). At 72 MHz, 200 ms
-// corresponds to 72000000 / 5 = 14400000 ticks. Therefore we need to set the 
-// prescaler to 256 in order for PR1 to be representable with 16 bits:
-// 14400000/256 = 56250 < 65535, OK
+#define FOSC 144000000  // 144 MHz Oscillator
+#define FCY (FOSC / 2)  // Instruction cycle frequency (72 MHz)
+// Max chunk size (233.2 ms) is achieved with a prescaler of 256
+#define MAX_DELAY 233  // max valid int value for ms to not overflow PR1
 
 void tmr_setup_period(int timer, int ms) {
-    // The timer ticks in 1 ms can be calculated as:
-    // Fcy / 256 / 1000 = 281.25
-    unsigned int timer_count = (281.25 * ms);   // Convert ms to timer ticks
+    unsigned int prescaler_values[] = {1, 8, 64, 256};  // Supported prescalers
+    unsigned int prescaler_bits[] = {0, 1, 2, 3};       // Corresponding TCKPS values
+    unsigned int prescaler = 1;
+    unsigned int tckps = 0;
+    unsigned long timer_count;
+    
+    for (int i = 0; i < 4; i++) {
+        prescaler = prescaler_values[i];
+        tckps = prescaler_bits[i];
+
+        timer_count = (FCY / 1000) * ms / prescaler;    // Convert ms to timer ticks
+
+        if (timer_count <= 65535) {     // If fits within 16-bit PR1 register
+            break;                      // Stop searching, this is the best prescaler
+        }
+        // Otherwise if no prescaler value is feasible, exit the function
+        else if (timer_count > 65535 && prescaler == 256) return;   
+    }
 
     if (timer == TIMER1) {
         T1CONbits.TON = 0;          // Stop Timer1
         IFS0bits.T1IF = 0;          // Clear Timer1 interrupt flag
         TMR1 = 0;                   // Reset Timer1 counter
         PR1 = timer_count;          // Set timer period
-        T1CONbits.TCKPS = 3;        // Prescaler 1:256 (TCKPS: 00=1, 01=8, 10=64, 11=256)
+        T1CONbits.TCKPS = tckps;    // Set selected prescaler
         T1CONbits.TON = 1;          // Start Timer1
+    }
+    
+    if (timer == TIMER2) {
+        T2CONbits.TON = 0;          // Stop Timer2
+        IFS0bits.T2IF = 0;          // Clear Timer2 interrupt flag
+        TMR2 = 0;                   // Reset Timer2 counter
+        PR2 = timer_count;          // Set timer period
+        T2CONbits.TCKPS = tckps;    // Set selected prescaler
+        T2CONbits.TON = 1;          // Start Timer2
     }
 }
 
@@ -32,17 +53,73 @@ int tmr_wait_period(int timer) {
             expired = 1;            // Expired before function call
         }
         while (!IFS0bits.T1IF);     // Wait for Timer1 flag
-        IFS0bits.T1IF = 0;          // Clear flag
+        IFS0bits.T1IF = 0;          // Clear Timer1 flag
+    }
+    
+    if (timer == TIMER2) {
+        if (IFS0bits.T2IF) {
+            expired = 1;            // Expired before function call
+        }
+        while (!IFS0bits.T2IF);     // Wait for Timer2 flag
+        IFS0bits.T2IF = 0;          // Clear Timer2 flag
     }
 
     return expired;
 }
 
-
-void tmr_wait_ms(int timer, int ms){   
-    if (ms <= 200){
-       tmr_setup_period(timer, ms);
-       tmr_wait_period(timer);
-       T1CONbits.TON = 0;
+void tmr_wait_ms(int timer, int ms){  
+    // If the requested delay is less than the MAX_DELAY obtainable with a 
+    // a single 16 bit timer, directly setup and wait for that ms value.
+    // (The setup function will automatically set the lowest feasible prescaler)
+    if (ms <= MAX_DELAY) {
+        tmr_setup_period(timer, ms);
+        tmr_wait_period(timer);
+        // Stop the timer
+        if (timer == TIMER1) {
+            T1CONbits.TON = 0;
+        } 
+        else if (timer == TIMER2) {
+            T2CONbits.TON = 0;
+        }
+    } 
+    // If the requested delay is bigger than the MAX_DELAY obtainable, we need
+    // to split the wait time into multiple big chunks with the prescaler set to 
+    // 256 (automatically done by tmr_setup_period because MAX_DELAY is feasible
+    // only with the max prescaler). When the remaining time is less than MAX_DELAY,
+    // the setup and wait period are called again, with the minimum prescaler feasible.
+    else {
+        int n_cycles = ms / MAX_DELAY;
+        int remainder = ms % MAX_DELAY;
+        // Wait for the necessary number of big delay chunks
+        tmr_setup_period(timer, MAX_DELAY);
+        for (int i = 0; i <= n_cycles; i++) {
+            tmr_wait_period(timer);
+        }
+        // Wait for the remaining time 
+        tmr_setup_period(timer, remainder);
+        tmr_wait_period(timer);
+        // Stop the timer
+        if (timer == TIMER1) {
+            T1CONbits.TON = 0;
+        } 
+        else if (timer == TIMER2) {
+            T2CONbits.TON = 0;
+        }
     }
 }
+
+//        // Start the timer
+//        tmr_setup_period(timer, MAX_DELAY);
+//        while (ms > MAX_DELAY) {
+//            tmr_wait_period(timer);
+//            ms -= MAX_DELAY;
+//        }
+//        tmr_setup_period(timer, ms);
+//        tmr_wait_period(timer);
+//        // Stop the timer
+//        if (timer == TIMER1) {
+//            T1CONbits.TON = 0;
+//        } 
+//        else if (timer == TIMER2) {
+//            T2CONbits.TON = 0;
+//        } 
