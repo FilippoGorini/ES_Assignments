@@ -1,7 +1,7 @@
 #include "timer.h"
 #include <xc.h>
 
-// define LED variable for convenience
+// Define LED variable for convenience
 #define LED LATAbits.LATA0          // LD1 is connected to RA0
 
 int main() {
@@ -10,6 +10,6 @@ int main() {
 
     while (1) {
         LED = !LED;                 // Toggle LED state
-        tmr_wait_period(TIMER1);    // Wait until next 
+        tmr_wait_period(TIMER1);    // Wait until next period
     }
 }

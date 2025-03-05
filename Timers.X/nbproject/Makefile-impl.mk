@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=Assignment2.X
+PROJECTNAME=Timers.X
 
 # Active Configuration
 DEFAULTCONF=default

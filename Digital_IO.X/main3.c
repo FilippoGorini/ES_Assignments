@@ -1,11 +1,3 @@
-/*
- * File:   MainExercise1.c
- * Author: Lenovo
- *
- * Created on February 24, 2025, 9:27 AM
- */
-
-
 #include <xc.h>
 #include <stdbool.h>
 
@@ -26,7 +18,6 @@ int main(void) {
             led_state = !led_state;     // Toggle the LED state
             LATAbits.LATA0 = led_state; // Apply new LED state
         }
-        
         prev_button_state = PORTEbits.RE8;  // Update previous button state
     }
     

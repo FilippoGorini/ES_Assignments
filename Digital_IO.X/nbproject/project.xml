@@ -3,7 +3,7 @@
     <type>com.microchip.mplab.nbide.embedded.makeproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
-            <name>Assignment1</name>
+            <name>Digital_IO</name>
             <creation-uuid>bc2e53d1-e69f-42bd-9a9a-ae4f59d86f43</creation-uuid>
             <make-project-type>0</make-project-type>
             <sourceEncoding>ISO-8859-1</sourceEncoding>
