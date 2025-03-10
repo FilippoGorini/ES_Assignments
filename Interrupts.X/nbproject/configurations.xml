@@ -199,7 +199,7 @@
         <property key="relaxed-math" value="false"/>
         <property key="save-temps" value="false"/>
       </C30Global>
-      <item path="main1.c" ex="false" overriding="false">
+      <item path="main1.c" ex="true" overriding="false">
         <C30>
         </C30>
         <C30-AR>
@@ -213,7 +213,7 @@
         <C30Global>
         </C30Global>
       </item>
-      <item path="main2.c" ex="true" overriding="false">
+      <item path="main2.c" ex="false" overriding="false">
         <C30>
         </C30>
         <C30-AR>

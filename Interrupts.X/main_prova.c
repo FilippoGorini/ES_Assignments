@@ -12,9 +12,11 @@
 
 #define LED2 LATGbits.LATG9
 
-void __attribute__((__interrupt__, __auto_psv__)) _INT1Interrupt() {   
-    IFS1bits.INT1IF = 0;    // reset interrupt flag
-    LED2 = !LED2; 
+void __attribute__((__interrupt__, __auto_psv__)) _INT1Interrupt() {
+    IEC1bits.INT1IE = 0;    // disable int1
+    IFS0bits.INT1IF = 0; // reset interrupt flag
+    LED2 = !LED2;
+    IEC1bits.INT1IE = 1;    // reenable int1
 }
 
 int main(void) {
@@ -32,10 +34,8 @@ int main(void) {
     IFS1bits.INT1IF = 0;        // Clear flag
     IEC1bits.INT1IE = 1;        // Enable specific interrupt
     
-    tmr_setup_period(TIMER1, 200);
-    while(1){
-        LED2 = !LED2;
-        tmr_wait_period(TIMER1);
+    while (1) {
+        
     }
     
     return 0;

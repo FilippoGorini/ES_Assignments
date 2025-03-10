@@ -128,12 +128,6 @@ void tmr_wait_ms(int timer, int ms){
     }
 }
 
-void __attribute__((__interrupt__, __auto_psv__)) _T2Interrupt() {
-  IFS0bits.T2IF = 0; // reset interrupt flag
-  LATGbits.LATG9 = !LATGbits.LATG9;
-  
-}
-
 void tmr_setup_period_32(int timer, int ms){
     unsigned int prescaler_values[] = {1, 8, 64, 256};  // Supported prescalers
     unsigned int prescaler_bits[] = {0, 1, 2, 3};       // Corresponding TCKPS values
@@ -156,7 +150,7 @@ void tmr_setup_period_32(int timer, int ms){
     switch(timer) {
         case TIMER2:
             T2CONbits.TON = 0;
-            T3CONbits.TON = 0;// Stop Timer2 (and Timer3 in 32-bit mode)
+            T3CONbits.TON = 0;              // Stop Timer2 
             T2CONbits.T32 = 1;              // Enable 32-bit timer mode (T2 + T3)
             T2CONbits.TCKPS = tckps;        // Set selected prescaler
 
@@ -179,5 +173,5 @@ void __attribute__((__interrupt__, no_auto_psv)) _T3Interrupt(void)
     /* Interrupt Service Routine code goes here */
     IFS0bits.T3IF = 0; // Clear Timer3 Interrupt Flag
     LATGbits.LATG9 = !LATGbits.LATG9;
-
 }
+
