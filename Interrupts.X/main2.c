@@ -24,10 +24,10 @@ int main(void) {
     // Set pin E8 as input (button)
     TRISEbits.TRISE8 = 1;
     
-    TRISGbits.TRISG9 = 0;   //set as out
-    LED2 = 0;               // reset
+    TRISGbits.TRISG9 = 0;       // Set as out
+    LED2 = 0;                   // Reset
     
-    RPINR0bits.INT1R = 0x58;    // Associate RE8 to INT1 functionality
+    RPINR0bits.INT1R = 0x58;    // Associate INT1 functionality to RE8 (RP88=0x58)
     INTCON2bits.GIE = 1;        // Enable global interrupt
     IFS1bits.INT1IF = 0;        // Clear flag
     IEC1bits.INT1IE = 1;        // Enable specific interrupt

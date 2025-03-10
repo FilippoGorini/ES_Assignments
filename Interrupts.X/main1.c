@@ -9,6 +9,14 @@
 #include "xc.h"
 
 #define LED1 LATAbits.LATA0
+#define LED2 LATGbits.LATG9
+
+void __attribute__((__interrupt__, no_auto_psv)) _T3Interrupt(void)
+{
+    IFS0bits.T3IF = 0;          // Clear Timer3 Interrupt Flag
+    LED2 = !LED2                // Toggle LED2
+}
+
 
 int main(void) {
     
