@@ -23,4 +23,5 @@ int main() {
             LED2 = 0;
         }
     }
+    return 0;
 }

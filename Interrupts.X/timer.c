@@ -6,7 +6,6 @@
 #define MAX_DELAY 233   // max valid int value for ms to not overflow PR1 [ms]
 // Max chunk size (233.2 ms) is achieved with a prescaler of 256
 
-#define TIMER3 3
 
 
 void tmr_setup_period(int timer, int ms) {
@@ -135,26 +134,43 @@ void __attribute__((__interrupt__, __auto_psv__)) _T2Interrupt() {
   
 }
 
-void tmr_setup_period_32(int timer1, int timer2, int ms){
-    int long timer_count = 0;
-    if (timer1==TIMER2 && timer2==TIMER3){
-        T3CONbits.TON = 0;
-        T2CONbits.TON = 0;
-        T2CONbits.T32 = 1;
-        //T2CONbits.TCS = 0;
-        //T2CONbits.TGATE = 0;
-        T2CONbits.TCKPS = 0;
-        
-        timer_count = (FCY/1000)*ms;
-        
-        TMR3 = 0;
-        TMR2 = 0;
-        PR3 = (timer_count & 0xfff); //prende i msw bit 
-        PR2 = (timer_count >>16); //prende lsw bit
-        
-        IFS0bits.T3IF = 0;
-        //IEC0bits.T3IE = 1;
-        T2CONbits.TON = 1;
+void tmr_setup_period_32(int timer, int ms){
+    unsigned int prescaler_values[] = {1, 8, 64, 256};  // Supported prescalers
+    unsigned int prescaler_bits[] = {0, 1, 2, 3};       // Corresponding TCKPS values
+    unsigned int prescaler = 1;
+    unsigned int tckps = 0;
+    unsigned long long timer_count;             // 64-bit for safety
+
+    for (int i = 0; i < 4; i++) {
+        prescaler = prescaler_values[i];
+        tckps = prescaler_bits[i];
+
+        timer_count = ((unsigned long long)FCY / 1000) * ms / prescaler;  // Compute required ticks
+
+        if (timer_count <= 0xFFFFFFFF) {        // Fits within a 32-bit register
+            break;
+        }
+        else if (i == 3) return;    // If max prescaler still overflows, exit
+    }
+    
+    switch(timer) {
+        case TIMER2:
+            T2CONbits.TON = 0;
+            T3CONbits.TON = 0;// Stop Timer2 (and Timer3 in 32-bit mode)
+            T2CONbits.T32 = 1;              // Enable 32-bit timer mode (T2 + T3)
+            T2CONbits.TCKPS = tckps;        // Set selected prescaler
+
+            TMR2 = 0;
+            TMR3 = 0;// Reset counter
+            PR2 = (unsigned int)(timer_count & 0xFFFF); // Load lower 16 bits into PR2
+            PR3 = (unsigned int)((timer_count >> 16) & 0xFFFF); // Load upper 16 bits into PR3
+
+            IFS0bits.T3IF = 0;              // Clear Timer3 (higher part) interrupt flag
+            IEC0bits.T3IE = 1;              // Enable Timer3 interrupt (since it signals overflow)
+            T2CONbits.TON = 1;              // Start the timer
+            break;
+        default:
+            return;
     }
 }
 
