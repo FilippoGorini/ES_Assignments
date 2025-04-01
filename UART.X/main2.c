@@ -12,13 +12,39 @@
 
 
 int received_chars = 0;
-char* data;
-struct Instruction command;
+char data;
+char state[3];
 int ld2_enabled = 1;  // Variable to enable/disable LD2 blinking
 
 
-struct CircularBuffer* cb;
-Buffer_Init(cb);
+CircularBuffer buffer;
+CircularBuffer *cb = &buffer;
+
+
+
+int parser_uart(CircularBuffer* cb, char* state){
+    if (Buffer_Read(cb, &data) != -1){
+        if (data == 'L'){
+            state[0] = data;
+            if (Buffer_Read(cb, &data) != -1){
+                if (data == 'D'){
+                   state[1] = data;
+                   if (Buffer_Read(cb, &data) != -1){
+                       if (data == '1') return 1;
+                       else if (data == '2') return 2;
+                       else return -1;
+                    }
+                   else return 0;
+                }
+                else return -1;
+            }
+            else return 0;
+        }
+        else return -1;
+    }
+    else return 0;
+}
+
 
 
 void algorithm() {
@@ -40,42 +66,16 @@ void __attribute__((__interrupt__, no_auto_psv)) _U1RXInterrupt(void) {
     // Store character in circular buffer
     if (Buffer_Write(cb, received_char) == -1){
         //do something
-        parser_uart(cb, command);
+        parser_uart(cb, state);
     }
-}
-
-int parser_uart(CircularBuffer* cb, Instruction* command){
-    if (Buffer_Read(cb, data) != -1){
-        if (data == 'L'){
-            //updating command
-            command->data[0] = data; 
-            return parser_uart(cb);
-        }
-        if (data == 'D'){
-                //updating command
-                command->data[1] = data; 
-                return parser_uart(cb);
-        }
-        if (data == '1'){           
-            memset(command->data, '0', 3);
-            return 1;
-        }
-        if (data == '2'){
-            memset(command->data, '0', 3);
-            return 2;
-        }
-        else {
-            memset(command->data, '0', 3);
-            return -1;
-        }
-    }
-    else return 0;
 }
 
 
 
 int main(void) {
     int ret;
+    
+    Buffer_Init(cb);
     
     TRISAbits.TRISA0 = 0;  // Set RA0 as output (LED1)
     TRISGbits.TRISG9 = 0;  // Set RG9 as output (LED2)
@@ -103,12 +103,16 @@ int main(void) {
     
     while (1) {
         algorithm();
-        int tag = parser_uart(cb, command);
+        int tag = parser_uart(cb, state);
         switch (tag){
             case 1:
+                memset(state, '0', 3);
                 LED1 = !LED1;
             case 2:
+                memset(state, '0', 3);
                 ld2_enabled = !ld2_enabled;
+            case -1:
+                memset(state, '0', 3);
         }
         ret = tmr_wait_period(TIMER1);
     }

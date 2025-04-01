@@ -50,6 +50,7 @@ typedef struct {
 
 typedef struct {
     char data[INSTRUCTION_SIZE];
+    int index;
 }Instruction;
 
 void Buffer_Init(CircularBuffer* cb);
