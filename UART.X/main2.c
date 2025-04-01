@@ -1,5 +1,6 @@
 #include "xc.h"
 #include "timer.h"
+#include "ring_buffer.h"
 #include <string.h>
 
 #define FCY 72000000UL
@@ -7,19 +8,18 @@
 #define LED1 LATAbits.LATA0
 #define LED2 LATGbits.LATG9
 
-#define BUFFER_SIZE 16  
 
-char uart_buffer[BUFFER_SIZE];
-int buffer_index = 0;
+
+
+int received_chars = 0;
+char* data;
+struct Instruction command;
 int ld2_enabled = 1;  // Variable to enable/disable LD2 blinking
-int received_chars = 0; // Counter for received characters
 
-struct circular_buffer {
-    char data[BUFFER_SIZE];
-    int head;
-};
 
-struct circular_buffer buffer = {.head = 0};
+struct CircularBuffer* cb;
+Buffer_Init(cb);
+
 
 void algorithm() {
     tmr_wait_ms(TIMER2, 7);  // Waste 7 ms to simulate algorithm
@@ -38,33 +38,40 @@ void __attribute__((__interrupt__, no_auto_psv)) _U1RXInterrupt(void) {
     received_chars++; // Increment received character counter
 
     // Store character in circular buffer
-    buffer.data[buffer.head] = received_char;
-    buffer.head = (buffer.head + 1) % BUFFER_SIZE;
-}
-
-void process_uart_commands() {
-    int i = buffer.head;
-    while (i != buffer.head - 1) {
-        int temp = i;
-        if (buffer.data[temp] == 'L') {
-            temp = (temp + 1) % BUFFER_SIZE;
-            if (buffer.data[temp] == 'D') {
-                temp = (temp + 1) % BUFFER_SIZE;
-                if (buffer.data[temp] == '1') {
-                    LED1 = !LED1;
-                    memset(buffer.data, '0', BUFFER_SIZE);
-                    return;
-                }
-                if (buffer.data[temp] == '2') {
-                    ld2_enabled = !ld2_enabled;
-                    memset(buffer.data, '0', BUFFER_SIZE);
-                    return;
-                }
-            }
-        }
-        i = (i + 1) % BUFFER_SIZE;
+    if (Buffer_Write(cb, received_char) == -1){
+        //do something
+        parser_uart(cb, command);
     }
 }
+
+int parser_uart(CircularBuffer* cb, Instruction* command){
+    if (Buffer_Read(cb, data) != -1){
+        if (data == 'L'){
+            //updating command
+            command->data[0] = data; 
+            return parser_uart(cb);
+        }
+        if (data == 'D'){
+                //updating command
+                command->data[1] = data; 
+                return parser_uart(cb);
+        }
+        if (data == '1'){           
+            memset(command->data, '0', 3);
+            return 1;
+        }
+        if (data == '2'){
+            memset(command->data, '0', 3);
+            return 2;
+        }
+        else {
+            memset(command->data, '0', 3);
+            return -1;
+        }
+    }
+    else return 0;
+}
+
 
 
 int main(void) {
@@ -96,7 +103,13 @@ int main(void) {
     
     while (1) {
         algorithm();
-        process_uart_commands();
+        int tag = parser_uart(cb, command);
+        switch (tag){
+            case 1:
+                LED1 = !LED1;
+            case 2:
+                ld2_enabled = !ld2_enabled;
+        }
         ret = tmr_wait_period(TIMER1);
     }
     
