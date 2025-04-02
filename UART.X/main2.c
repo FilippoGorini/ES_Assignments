@@ -12,37 +12,41 @@
 
 
 int received_chars = 0;
-char data;
-char state[3];
+char data = '0';
 int ld2_enabled = 1;  // Variable to enable/disable LD2 blinking
 
 
 CircularBuffer buffer;
 CircularBuffer *cb = &buffer;
 
+int state = 0;
 
 
-int parser_uart(CircularBuffer* cb, char* state){
-    if (Buffer_Read(cb, &data) != -1){
+int parser_uart(CircularBuffer* cb, int state){
+    if (Buffer_Read(cb, &data) == 0){
         if (data == 'L'){
-            state[0] = data;
-            if (Buffer_Read(cb, &data) != -1){
-                if (data == 'D'){
-                   state[1] = data;
-                   if (Buffer_Read(cb, &data) != -1){
-                       if (data == '1') return 1;
-                       else if (data == '2') return 2;
-                       else return -1;
-                    }
-                   else return 0;
-                }
-                else return -1;
-            }
-            else return 0;
+            state = 1;
+            return parser_uart(cb, state);
         }
-        else return -1;
+        if (state == 1 && data == 'D'){
+            state = 2;
+            return parser_uart(cb, state);
+        }
+        if (state == 2 && data == '1'){
+            state = 0;
+            return 1;
+        }
+        if (state == 2 && data == '2'){
+            state = 0;
+            return 2;
+        }
+        else {
+            state = 0;
+            return -1; 
+        }
+        
     }
-    else return 0;
+    return 0;
 }
 
 
@@ -74,6 +78,8 @@ void __attribute__((__interrupt__, no_auto_psv)) _U1RXInterrupt(void) {
 
 int main(void) {
     int ret;
+    int tag = 0;
+    
     
     Buffer_Init(cb);
     
@@ -103,19 +109,17 @@ int main(void) {
     
     while (1) {
         algorithm();
-        int tag = parser_uart(cb, state);
+        tag = parser_uart(cb, state);
         switch (tag){
             case 1:
-                memset(state, '0', 3);
                 LED1 = !LED1;
+                break;
             case 2:
-                memset(state, '0', 3);
                 ld2_enabled = !ld2_enabled;
-            case -1:
-                memset(state, '0', 3);
+                break;
         }
         ret = tmr_wait_period(TIMER1);
     }
     
-    return 0;
+    
 }

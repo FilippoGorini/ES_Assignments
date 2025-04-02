@@ -6,8 +6,9 @@
  */
 
 
-#include "xc.h"
 #include "ring_buffer.h"
+#include "xc.h"
+
 
 
 void Buffer_Init(CircularBuffer* cb){

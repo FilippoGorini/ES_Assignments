@@ -48,10 +48,6 @@ typedef struct {
     int count;
 } CircularBuffer;
 
-typedef struct {
-    char data[INSTRUCTION_SIZE];
-    int index;
-}Instruction;
 
 void Buffer_Init(CircularBuffer* cb);
 int Buffer_Write (CircularBuffer* cb, char data);
@@ -104,5 +100,5 @@ extern "C" {
 }
 #endif /* __cplusplus */
 
-#endif	/* XC_HEADER_TEMPLATE_H */
+#endif	/* RING_BUFFER_H */
 
