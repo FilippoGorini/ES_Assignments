@@ -1,7 +1,5 @@
 #include <xc.h>
 #include "timer_lib.h"
-#include "config.h"
-#include "general_purpose_lib.h"
 
 
 // Supports all timers from T1 to T9

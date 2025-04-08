@@ -1,6 +1,7 @@
 #include "xc.h"
-
 #include "../LIBRARY.X/timer_lib.h"
+#include <stdio.h>
+#include "string.h"
 
 
 void spi_init() {
@@ -8,17 +9,26 @@ void spi_init() {
     TRISAbits.TRISA1 = 1;               // RA1-RPI17  MISO (input)
     TRISFbits.TRISF12 = 0;              // RF12-RP108 SCK (output)
     TRISFbits.TRISF13 = 0;              // RF13-RP109 MOSI (output)
+    // Set CS bits as outputs
+    TRISBbits.TRISB3 = 0;
+    TRISBbits.TRISB4 = 0;
+    TRISDbits.TRISD6 = 0;
 
     // Configure Peripheral Pin Select (PPS) mapping
     RPINR20bits.SDI1R = 0b0010001;      // MISO (SDI1) - RPI17
     RPOR12bits.RP109R = 0b000101;       // MOSI (SDO1) - RF13
     RPOR11bits.RP108R = 0b000110;       // SCK1 - RF12
-
+    
+    // Configure CS bits
+    LATBbits.LATB3 = 1;                 // Disable accelerometers
+    LATBbits.LATB4 = 1;                // Disable gyroscope
+    LATDbits.LATD6 = 0;                 // Select magnetometer
+    
     // Configure SPI module (before enabling it)
     SPI1CON1bits.MSTEN = 1;             // Enable master mode
     SPI1CON1bits.MODE16 = 0;             // 8-bit mode
-    SPI1CON1bits.PPRE = 3;               // 1:1 primary prescaler
-    SPI1CON1bits.SPRE = 3;               // 5:1 secondary prescaler
+    SPI1CON1bits.PPRE = 2;               // 1:1 primary prescaler
+    SPI1CON1bits.SPRE = 5;               // 5:1 secondary prescaler
 
     // Enable SPI (final step)
     SPI1STATbits.SPIEN = 1;             // Enable SPI module
@@ -56,24 +66,31 @@ int main(void) {
     //write '0' in the register 
     spi_init();
     //ask to magnometer to send me the chipID
-    unsigned int reg_mode = 0x4B;
-    unsigned int dummy = spi_write (reg_mode & 0xFE);
-    dummy = spi_write(1);
+    unsigned int dummy = spi_write(0x4B | 0x00);
+    dummy = spi_write(0x01);
     
     tmr_wait_ms(TIMER1, 3); //i have to wait 3ms to set on activeted mode
     
     //set on Active mode
-    dummy = spi_write (0x4C & 0xFE);
-    dummy = spi_write(0b00);
+    dummy = spi_write(0x4C | 0x00);
+    dummy = spi_write(0x00);
     
     //read the chipID
-    dummy = spi_write (0x40 || 0x01);
-    chipID = spi_write (dummy);
+    dummy = spi_write(0x40 | 0x80);
+    chipID = spi_write(0x00);
     
-    //write on the UART
-    while (U1STAbits.UTXBF);        // Wait if the transmit buffer is full
-    U1TXREG = chipID;
+    char buffer[5];
+    sprintf(buffer, "%X", chipID);
+
+    for(int i = 0; i < strlen(buffer); i++)
+    {
+        while (U1STAbits.UTXBF);
+        U1TXREG = buffer[i];
+    }
     
+    while(1) {
+        
+    }
     
     return 0;
 }

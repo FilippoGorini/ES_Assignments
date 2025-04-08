@@ -89,14 +89,14 @@ MP_LINKER_FILE_OPTION=,--script=p33EP512MU810.gld
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: compile
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-${OBJECTDIR}/main1.o: main1.c  .generated_files/flags/default/829fb61e0b08f7e85908cda8194391a35a03d4eb .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
+${OBJECTDIR}/main1.o: main1.c  .generated_files/flags/default/fede4ea1611680035e9a564f74a0b3204b1f1365 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/main1.o.d 
 	@${RM} ${OBJECTDIR}/main1.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  main1.c  -o ${OBJECTDIR}/main1.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/main1.o.d"      -g -D__DEBUG   -mno-eds-warn  -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
 else
-${OBJECTDIR}/main1.o: main1.c  .generated_files/flags/default/97b1997d1a2bd3375da227acf8ed289ded5fe6f8 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
+${OBJECTDIR}/main1.o: main1.c  .generated_files/flags/default/deca16f3cf18922132f3132bdca654fc6ddadc7e .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/main1.o.d 
 	@${RM} ${OBJECTDIR}/main1.o 
@@ -119,14 +119,14 @@ endif
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: link
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-${DISTDIR}/SPI.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk    
+${DISTDIR}/SPI.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk  ../LIBRARY.X/dist/default/debug/LIBRARY.X.a  
 	@${MKDIR} ${DISTDIR} 
-	${MP_CC} $(MP_EXTRA_LD_PRE)  -o ${DISTDIR}/SPI.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}  ${OBJECTFILES_QUOTED_IF_SPACED}      -mcpu=$(MP_PROCESSOR_OPTION)        -D__DEBUG=__DEBUG   -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)      -Wl,--local-stack,,--defsym=__MPLAB_BUILD=1,--defsym=__MPLAB_DEBUG=1,--defsym=__DEBUG=1,-D__DEBUG=__DEBUG,,$(MP_LINKER_FILE_OPTION),--stack=16,--check-sections,--data-init,--pack-data,--handles,--isr,--no-gc-sections,--fill-upper=0,--stackguard=16,--no-force-link,--smart-io,-Map="${DISTDIR}/${PROJECTNAME}.${IMAGE_TYPE}.map",--report-mem,--memorysummary,${DISTDIR}/memoryfile.xml$(MP_EXTRA_LD_POST)  -mdfp="${DFP_DIR}/xc16" 
+	${MP_CC} $(MP_EXTRA_LD_PRE)  -o ${DISTDIR}/SPI.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}  ${OBJECTFILES_QUOTED_IF_SPACED}    ..\LIBRARY.X\dist\default\debug\LIBRARY.X.a  -mcpu=$(MP_PROCESSOR_OPTION)        -D__DEBUG=__DEBUG   -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)      -Wl,--local-stack,,--defsym=__MPLAB_BUILD=1,--defsym=__MPLAB_DEBUG=1,--defsym=__DEBUG=1,-D__DEBUG=__DEBUG,,$(MP_LINKER_FILE_OPTION),--stack=16,--check-sections,--data-init,--pack-data,--handles,--isr,--no-gc-sections,--fill-upper=0,--stackguard=16,--no-force-link,--smart-io,-Map="${DISTDIR}/${PROJECTNAME}.${IMAGE_TYPE}.map",--report-mem,--memorysummary,${DISTDIR}/memoryfile.xml$(MP_EXTRA_LD_POST)  -mdfp="${DFP_DIR}/xc16" 
 	
 else
-${DISTDIR}/SPI.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk   
+${DISTDIR}/SPI.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk  ../LIBRARY.X/dist/default/production/LIBRARY.X.a 
 	@${MKDIR} ${DISTDIR} 
-	${MP_CC} $(MP_EXTRA_LD_PRE)  -o ${DISTDIR}/SPI.X.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX}  ${OBJECTFILES_QUOTED_IF_SPACED}      -mcpu=$(MP_PROCESSOR_OPTION)        -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -Wl,--local-stack,,--defsym=__MPLAB_BUILD=1,$(MP_LINKER_FILE_OPTION),--stack=16,--check-sections,--data-init,--pack-data,--handles,--isr,--no-gc-sections,--fill-upper=0,--stackguard=16,--no-force-link,--smart-io,-Map="${DISTDIR}/${PROJECTNAME}.${IMAGE_TYPE}.map",--report-mem,--memorysummary,${DISTDIR}/memoryfile.xml$(MP_EXTRA_LD_POST)  -mdfp="${DFP_DIR}/xc16" 
+	${MP_CC} $(MP_EXTRA_LD_PRE)  -o ${DISTDIR}/SPI.X.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX}  ${OBJECTFILES_QUOTED_IF_SPACED}    ..\LIBRARY.X\dist\default\production\LIBRARY.X.a  -mcpu=$(MP_PROCESSOR_OPTION)        -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -Wl,--local-stack,,--defsym=__MPLAB_BUILD=1,$(MP_LINKER_FILE_OPTION),--stack=16,--check-sections,--data-init,--pack-data,--handles,--isr,--no-gc-sections,--fill-upper=0,--stackguard=16,--no-force-link,--smart-io,-Map="${DISTDIR}/${PROJECTNAME}.${IMAGE_TYPE}.map",--report-mem,--memorysummary,${DISTDIR}/memoryfile.xml$(MP_EXTRA_LD_POST)  -mdfp="${DFP_DIR}/xc16" 
 	${MP_CC_DIR}\\xc16-bin2hex ${DISTDIR}/SPI.X.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX} -a  -omf=elf   -mdfp="${DFP_DIR}/xc16" 
 	
 endif
@@ -134,10 +134,12 @@ endif
 
 # Subprojects
 .build-subprojects:
+	cd ../LIBRARY.X && ${MAKE}  -f Makefile CONF=default
 
 
 # Subprojects
 .clean-subprojects:
+	cd ../LIBRARY.X && rm -rf "build/default" "dist/default"
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}

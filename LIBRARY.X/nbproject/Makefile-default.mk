@@ -51,17 +51,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=general_purpose_lib.c timer_lib.c
+SOURCEFILES_QUOTED_IF_SPACED=general_purpose_lib.c timer_lib.c uart_lib.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/general_purpose_lib.o ${OBJECTDIR}/timer_lib.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/general_purpose_lib.o.d ${OBJECTDIR}/timer_lib.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/general_purpose_lib.o ${OBJECTDIR}/timer_lib.o ${OBJECTDIR}/uart_lib.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/general_purpose_lib.o.d ${OBJECTDIR}/timer_lib.o.d ${OBJECTDIR}/uart_lib.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/general_purpose_lib.o ${OBJECTDIR}/timer_lib.o
+OBJECTFILES=${OBJECTDIR}/general_purpose_lib.o ${OBJECTDIR}/timer_lib.o ${OBJECTDIR}/uart_lib.o
 
 # Source Files
-SOURCEFILES=general_purpose_lib.c timer_lib.c
+SOURCEFILES=general_purpose_lib.c timer_lib.c uart_lib.c
 
 
 
@@ -89,30 +89,42 @@ MP_LINKER_FILE_OPTION=,--script=p33EP512MU810.gld
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: compile
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-${OBJECTDIR}/general_purpose_lib.o: general_purpose_lib.c  .generated_files/flags/default/5d62374a09c10aeb114d22e5c18098dbc5733737 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
+${OBJECTDIR}/general_purpose_lib.o: general_purpose_lib.c  .generated_files/flags/default/2dbee12313aa9dbaf2cadb9110bc9171959a8378 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/general_purpose_lib.o.d 
 	@${RM} ${OBJECTDIR}/general_purpose_lib.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  general_purpose_lib.c  -o ${OBJECTDIR}/general_purpose_lib.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/general_purpose_lib.o.d"      -g -D__DEBUG   -mno-eds-warn  -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/timer_lib.o: timer_lib.c  .generated_files/flags/default/784254bf8c894363d6df98d322826736d29fe77d .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
+${OBJECTDIR}/timer_lib.o: timer_lib.c  .generated_files/flags/default/be399ee4959b234919f913f7c169a2e8acd88fe9 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/timer_lib.o.d 
 	@${RM} ${OBJECTDIR}/timer_lib.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  timer_lib.c  -o ${OBJECTDIR}/timer_lib.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/timer_lib.o.d"      -g -D__DEBUG   -mno-eds-warn  -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
+${OBJECTDIR}/uart_lib.o: uart_lib.c  .generated_files/flags/default/a06cdb936c57cb5782904a3fce6ff14f61af8eff .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/uart_lib.o.d 
+	@${RM} ${OBJECTDIR}/uart_lib.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  uart_lib.c  -o ${OBJECTDIR}/uart_lib.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/uart_lib.o.d"      -g -D__DEBUG   -mno-eds-warn  -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
+	
 else
-${OBJECTDIR}/general_purpose_lib.o: general_purpose_lib.c  .generated_files/flags/default/ab330931d37559aac6fbfe2e99ba4bf243d37707 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
+${OBJECTDIR}/general_purpose_lib.o: general_purpose_lib.c  .generated_files/flags/default/2dfd786dbd2a1589e2f0ae3ea3d0f5f6ed618300 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/general_purpose_lib.o.d 
 	@${RM} ${OBJECTDIR}/general_purpose_lib.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  general_purpose_lib.c  -o ${OBJECTDIR}/general_purpose_lib.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/general_purpose_lib.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/timer_lib.o: timer_lib.c  .generated_files/flags/default/d71bca39c6af99731d3eda991d9af080369d9e0 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
+${OBJECTDIR}/timer_lib.o: timer_lib.c  .generated_files/flags/default/ea182686fe183abecea73e96d20ba955f2e8feb7 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/timer_lib.o.d 
 	@${RM} ${OBJECTDIR}/timer_lib.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  timer_lib.c  -o ${OBJECTDIR}/timer_lib.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/timer_lib.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
+	
+${OBJECTDIR}/uart_lib.o: uart_lib.c  .generated_files/flags/default/33835549ed030133ad5ffa6d70078a38b8fb5ae .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/uart_lib.o.d 
+	@${RM} ${OBJECTDIR}/uart_lib.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  uart_lib.c  -o ${OBJECTDIR}/uart_lib.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/uart_lib.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
 endif
 
