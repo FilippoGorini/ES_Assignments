@@ -90,7 +90,7 @@ int tmr_wait_period(int timer) {
             IFS0bits.T3IF = 0;          // Clear Timer2 flag
             break;
         default:
-            return;
+            return expired;
     }
     return expired;
 }

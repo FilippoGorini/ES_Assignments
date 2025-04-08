@@ -1,12 +1,9 @@
 #include "xc.h"
-#include "timer.h"
+#include "../LIBRARY.X/timer_lib.h"
+#include "../LIBRARY.X/uart_lib.h"
+#include "../LIBRARY.X/general_purpose_lib.h"
 #include "ring_buffer.h"
 #include <string.h>
-
-#define FCY 72000000UL
-#define BAUD_RATE 9600
-#define LED1 LATAbits.LATA0
-#define LED2 LATGbits.LATG9
 
 
 
@@ -49,12 +46,6 @@ int parser_uart(CircularBuffer* cb, int state){
     return 0;
 }
 
-
-
-void algorithm() {
-    tmr_wait_ms(TIMER2, 7);  // Waste 7 ms to simulate algorithm
-}
-
 void __attribute__((__interrupt__, no_auto_psv)) _T3Interrupt(void) {
     IFS0bits.T3IF = 0;  // Clear Timer3 Interrupt Flag
     if (ld2_enabled) {
@@ -83,29 +74,19 @@ int main(void) {
     
     Buffer_Init(cb);
     
-    TRISAbits.TRISA0 = 0;  // Set RA0 as output (LED1)
-    TRISGbits.TRISG9 = 0;  // Set RG9 as output (LED2)
+    leds_init();
     
     // SETUP INTERRUPTS
-    INTCON2bits.GIE = 1;  // Enable global interrupt
+    global_interrupt_enable();
     IEC0bits.T3IE = 1;  // Enable Timer3 interrupt
-    IFS0bits.U1RXIF = 0;  // Clear UART1 RX interrupt flag
-    IEC0bits.U1RXIE = 1;  // Enable UART1 RX interrupt
+    uart_int_enable();
     
-   
+    // SETUP UART
+    uart_init();
+    
     // SETUP TIMERS
     tmr_setup_period(TIMER1, 10);  // Set TIMER1 to 100 Hz
     tmr_setup_period(TIMER3, 200);  // Set TIMER3 to blink LED2 at 2.5Hz
-    
-    // SETUP UART
-    RPOR0bits.RP64R = 0x01;  // Map UART1 TX to RD0
-    RPINR18bits.U1RXR = 0x4B;  // Map UART1 RX to RD11
-    
-    // Set baud rate to 9600
-    U1BRG = (unsigned int)((FCY / (16UL * BAUD_RATE)) - 1);
-    U1MODEbits.UARTEN = 1;  // Enable UART1
-    U1STAbits.UTXEN = 1;  // Enable U1TX (transmission)
-    U1STAbits.URXISEL = 0;  // Set U1RX interrupt to be triggered when a new byte is received
     
     while (1) {
         algorithm();

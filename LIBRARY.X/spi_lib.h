@@ -28,43 +28,17 @@
 
 // This is a guard condition so that contents of this file are not included
 // more than once.  
-#ifndef CONFIG_H
-#define	CONFIG_H
+#ifndef SPI_LIB_H
+#define	SPI_LIB_H
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 
 // TODO Insert appropriate #include <>
+#include "config.h"
 
 // TODO Insert C++ class definitions if appropriate
 
 // TODO Insert declarations
-
-// GENERAL
-#define FCY 72000000UL      // Instruction cycle frequency
-#define MAX_DELAY 233       // Max int value to not overflow 16-bit timer register
-
-// TIMERS
-#define TIMER1 1
-#define TIMER2 2
-#define TIMER3 3
-#define TIMER4 4
-#define TIMER5 5
-#define TIMER6 6
-#define TIMER7 7
-#define TIMER8 8
-#define TIMER9 9
-
-// UART
-#define UART_BAUD_RATE 9600
-
-//SPI
-#define CS_ACC LATBbits.LATB3            
-#define CS_GYR LATBbits.LATB4
-#define CS_MAG LATDbits.LATD6
-
-// LEDS
-#define LED1 LATAbits.LATA0
-#define LED2 LATGbits.LATG9
 
 // Comment a function and leverage automatic documentation with slash star star
 /**
@@ -89,6 +63,8 @@
  */
 // TODO Insert declarations or function prototypes (right here) to leverage 
 // live documentation
+void spi_init(void);
+unsigned int spi_write(unsigned int data);
 
 #ifdef	__cplusplus
 extern "C" {
@@ -101,5 +77,5 @@ extern "C" {
 }
 #endif /* __cplusplus */
 
-#endif	/* CONFIG_H */
+#endif	/* SPI_LIB_H */
 

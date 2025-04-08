@@ -3,22 +3,18 @@
     <type>com.microchip.mplab.nbide.embedded.makeproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
-            <name>UART</name>
-            <creation-uuid>51fbeb7c-42a6-4602-b0b0-9fe786de4284</creation-uuid>
+            <name>Assignment</name>
+            <creation-uuid>effc4147-d7a5-4f7a-acf5-a57bf49414a0</creation-uuid>
             <make-project-type>0</make-project-type>
-            <sourceEncoding>ISO-8859-1</sourceEncoding>
-            <make-dep-projects>
-                <make-dep-project>../LIBRARY.X</make-dep-project>
-            </make-dep-projects>
-            <sourceRootList>
-                <sourceRootElem>.</sourceRootElem>
-            </sourceRootList>
+            <make-dep-projects/>
+            <sourceRootList/>
             <confList>
                 <confElem>
                     <name>default</name>
                     <type>2</type>
                 </confElem>
             </confList>
+            <sourceEncoding>ISO-8859-1</sourceEncoding>
             <formatting>
                 <project-formatting-style>false</project-formatting-style>
             </formatting>

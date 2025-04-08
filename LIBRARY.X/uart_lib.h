@@ -65,6 +65,7 @@
 // live documentation
 
 void uart_init(void);
+void uart_int_enable(void);
 
 #ifdef	__cplusplus
 extern "C" {

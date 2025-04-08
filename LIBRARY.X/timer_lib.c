@@ -14,7 +14,7 @@ void tmr_setup_period(int timer, int ms) {
         prescaler = prescaler_values[i];
         tckps = prescaler_bits[i];
 
-        timer_count = ((unsigned long long)FCY * ms) / (1000 * prescaler);  // Compute required ticks
+        timer_count = ((unsigned long long)FCY * (unsigned long long)ms) / (1000ULL * prescaler);
 
         if (timer_count <= 0xFFFF) {    // If fits within 16-bit PR1 register (max value 65535)
             break;                      // Stop searching, this is the best prescaler
@@ -114,7 +114,7 @@ void tmr32_setup_period(int timer, int ms){
         prescaler = prescaler_values[i];
         tckps = prescaler_bits[i];
 
-        timer_count = ((unsigned long long)FCY * ms) / (1000 * prescaler);  // Compute required ticks
+        timer_count = ((unsigned long long)FCY * (unsigned long long)ms) / (1000ULL * prescaler);
 
         if (timer_count <= 0xFFFFFFFF) {    // If fits within 32-bits
             break;                      
