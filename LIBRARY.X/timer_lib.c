@@ -115,7 +115,7 @@ void tmr32_setup_period(int timer, int ms){
         tckps = prescaler_bits[i];
 
         timer_count = ((unsigned long long)FCY * (unsigned long long)ms) / (1000ULL * prescaler);
-
+        
         if (timer_count <= 0xFFFFFFFF) {    // If fits within 32-bits
             break;                      
         }
@@ -136,7 +136,7 @@ void tmr32_setup_period(int timer, int ms){
             // We're fine with the interrupt flag's default priority level (4), ...
             // ... otherwise we would need to set it explicitly
             IFS0bits.T3IF = 0;              // Clear Timer3 (higher part) interrupt flag
-            IEC0bits.T3IE = 1;              // Enable Timer3 interrupt
+//            IEC0bits.T3IE = 1;              // Enable Timer3 interrupt
             T2CONbits.TON = 1;              // Start the timer
             break;
         case TIMER4:
@@ -149,7 +149,7 @@ void tmr32_setup_period(int timer, int ms){
             PR4 = (unsigned int)(timer_count & 0xFFFF);      
             PR5 = (unsigned int)((timer_count >> 16) & 0xFFFF); 
             IFS1bits.T5IF = 0;             
-            IEC1bits.T5IE = 1;            
+//            IEC1bits.T5IE = 1;            
             T4CONbits.TON = 1;            
             break;
         case TIMER6:
@@ -162,7 +162,7 @@ void tmr32_setup_period(int timer, int ms){
             PR6 = (unsigned int)(timer_count & 0xFFFF);      
             PR7 = (unsigned int)((timer_count >> 16) & 0xFFFF); 
             IFS3bits.T7IF = 0;             
-            IEC3bits.T7IE = 1;            
+//            IEC3bits.T7IE = 1;            
             T6CONbits.TON = 1;            
             break;
         case TIMER8:
@@ -175,7 +175,7 @@ void tmr32_setup_period(int timer, int ms){
             PR8 = (unsigned int)(timer_count & 0xFFFF);      
             PR9 = (unsigned int)((timer_count >> 16) & 0xFFFF); 
             IFS3bits.T9IF = 0;             
-            IEC3bits.T9IE = 1;            
+//            IEC3bits.T9IE = 1;            
             T8CONbits.TON = 1;            
             break;
         default:
