@@ -73,7 +73,7 @@ void set_digital_mode(void);
 void leds_init(void);
 void global_interrupt_enable(void);
 void algorithm(void);
-int Buffer_Init(volatile CircularBuffer* cb, unsigned int size);
+int Buffer_Init(volatile CircularBuffer* cb, volatile char* buf, unsigned int size);
 int Buffer_Write(volatile CircularBuffer* cb, char data);
 int Buffer_Read(volatile CircularBuffer* cb, char* data);
 

@@ -67,6 +67,11 @@
 #define LED1 LATAbits.LATA0
 #define LED2 LATGbits.LATG9
 
+#define LEDL LATBbits.LATB8 
+#define LEDR LATFbits.LATF1
+#define LEDBRAKE LATGbits.LATG1
+#define LEDFRONT LATAbits.LATA7
+
 // Comment a function and leverage automatic documentation with slash star star
 /**
     <p><b>Function prototype:</b></p>

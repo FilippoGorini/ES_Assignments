@@ -27,18 +27,26 @@ void algorithm (void) {
     tmr_wait_ms(TIMER2, 7);
 }
 
-int Buffer_Init(volatile CircularBuffer* cb, unsigned int size) {
-    // Initializes the buffer structure and allocates memory for the data array.
-    // Returns 0 on success, -1 if memory allocation fails.
+//int Buffer_Init(volatile CircularBuffer* cb, unsigned int size) {
+//    // Initializes the buffer structure and allocates memory for the data array.
+//    // Returns 0 on success, -1 if memory allocation fails.
+//    cb->head = 0;
+//    cb->tail = 0;
+//    cb->count = 0;
+//    cb->size = size;
+//    cb->buffer = (volatile char *)malloc(size * sizeof(char));
+//    
+//    if(cb->buffer == NULL) {
+//        return -1;  // Memory allocation error
+//    }
+//    return 0;
+//}
+int Buffer_Init(volatile CircularBuffer* cb, volatile char* buf, unsigned int size) {
     cb->head = 0;
     cb->tail = 0;
     cb->count = 0;
     cb->size = size;
-    cb->buffer = (volatile char *)malloc(size * sizeof(char));
-    
-    if(cb->buffer == NULL) {
-        return -1;  // Memory allocation error
-    }
+    cb->buffer = buf;   // Use static memory
     return 0;
 }
 
