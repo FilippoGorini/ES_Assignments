@@ -11,13 +11,13 @@
 
 
 
-void Buffer_Init(CircularBuffer* cb){
+void Buffer_Init_0 (CircularBuffer_0* cb){
     cb->head = 0;
     cb->tail = 0;
     cb->count = 0;
 }
 
-int Buffer_Write (CircularBuffer* cb, char data){
+int Buffer_Write_0 (CircularBuffer_0* cb, char data){
     if (cb->count == BUFFER_SIZE){
         return -1;
     }
@@ -28,7 +28,7 @@ int Buffer_Write (CircularBuffer* cb, char data){
     return 0;
 }
 
-int Buffer_Read(CircularBuffer* cb, char* data){
+int Buffer_Read_0 (CircularBuffer_0* cb, char* data){
     if (cb->count == 0){
         return -1;
     }

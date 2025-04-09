@@ -272,7 +272,7 @@ int tmr_wait_period(int timer) {
             IFS3bits.T9IF = 0;      
             break;
         default:
-            return;
+            return -1;
     }
     return expired;
 }

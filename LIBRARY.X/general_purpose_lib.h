@@ -39,6 +39,13 @@
 // TODO Insert C++ class definitions if appropriate
 
 // TODO Insert declarations
+typedef struct {
+    volatile unsigned int head;    // index for reading
+    volatile unsigned int tail;    // index for writing
+    volatile unsigned int count;   // number of bytes currently stored
+    unsigned int size;             // total capacity of the buffer
+    volatile char *buffer;         // pointer to the actual data array
+} volatile CircularBuffer;
 
 // Comment a function and leverage automatic documentation with slash star star
 /**
@@ -66,6 +73,9 @@ void set_digital_mode(void);
 void leds_init(void);
 void global_interrupt_enable(void);
 void algorithm(void);
+int Buffer_Init(volatile CircularBuffer* cb, unsigned int size);
+int Buffer_Write(volatile CircularBuffer* cb, char data);
+int Buffer_Read(volatile CircularBuffer* cb, char* data);
 
 // TODO Insert declarations or function prototypes (right here) to leverage 
 // live documentation

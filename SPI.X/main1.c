@@ -1,6 +1,6 @@
 #include <xc.h>
 #include <stdio.h>
-#include "string.h"
+#include <string.h>
 #include "../LIBRARY.X/timer_lib.h"
 #include "../LIBRARY.X/general_purpose_lib.h"
 #include "../LIBRARY.X/uart_lib.h"

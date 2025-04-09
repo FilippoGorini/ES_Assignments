@@ -46,12 +46,12 @@ typedef struct {
     int head;
     int tail;
     int count;
-} CircularBuffer;
+} CircularBuffer_0;
 
 
-void Buffer_Init(CircularBuffer* cb);
-int Buffer_Write (CircularBuffer* cb, char data);
-int Buffer_Read(CircularBuffer* cb, char* data);
+void Buffer_Init_0(CircularBuffer_0* cb);
+int Buffer_Write_0 (CircularBuffer_0* cb, char data);
+int Buffer_Read_0(CircularBuffer_0* cb, char* data);
 
 
 

@@ -13,14 +13,14 @@ char data = '0';
 int ld2_enabled = 1;  // Variable to enable/disable LD2 blinking
 
 
-CircularBuffer buffer;
-CircularBuffer *cb = &buffer;
+CircularBuffer_0 buffer;
+CircularBuffer_0 *cb = &buffer;
 
 int state = 0;
 
 
-int parser_uart(CircularBuffer* cb, int state){
-    if (Buffer_Read(cb, &data) == 0){
+int parser_uart(CircularBuffer_0* cb, int state){
+    if (Buffer_Read_0(cb, &data) == 0){
         if (data == 'L'){
             state = 1;
             return parser_uart(cb, state);
@@ -59,7 +59,7 @@ void __attribute__((__interrupt__, no_auto_psv)) _U1RXInterrupt(void) {
     received_chars++; // Increment received character counter
 
     // Store character in circular buffer
-    if (Buffer_Write(cb, received_char) == -1){
+    if (Buffer_Write_0(cb, received_char) == -1){
         //do something
         parser_uart(cb, state);
     }
@@ -72,14 +72,14 @@ int main(void) {
     int tag = 0;
     
     
-    Buffer_Init(cb);
+    Buffer_Init_0(cb);
     
     leds_init();
     
     // SETUP INTERRUPTS
     global_interrupt_enable();
     IEC0bits.T3IE = 1;  // Enable Timer3 interrupt
-    uart_int_enable();
+    uart_interrupt_enable();
     
     // SETUP UART
     uart_init();

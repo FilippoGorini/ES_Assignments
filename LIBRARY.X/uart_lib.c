@@ -1,4 +1,4 @@
-#include "xc.h"
+#include <xc.h>
 #include "uart_lib.h"
 
 
@@ -15,7 +15,7 @@ void uart_init() {
     U1STAbits.UTXEN = 1;                // Enable U1TX (transimission) 
 }
 
-void uart_int_enable() {
+void uart_interrupt_enable() {
     IFS0bits.U1RXIF = 0;  // Clear UART1 RX interrupt flag
     IEC0bits.U1RXIE = 1;  // Enable UART1 RX interrupt
 }

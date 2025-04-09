@@ -1,4 +1,4 @@
-#include "xc.h"
+#include <xc.h>
 #include "spi_lib.h"
 
 
@@ -35,12 +35,33 @@ void spi_init() {
 
 
 unsigned int spi_write(unsigned int data) {
-    
-    //write data
+    // write data to the MOSI line
     while (SPI1STATbits.SPITBF == 1);
     SPI1BUF = data;
         
-    //read data
-    while (SPI1STATbits.SPIRBF != 1); //SPIRBF = SPI1 Receive Buffer Full Status bit
+    // read data received on the MISO line
+    while (SPI1STATbits.SPIRBF == 0);   //SPIRBF = SPI1 Receive Buffer Full Status bit
     return SPI1BUF;  
+}
+
+void spi_read_address(unsigned char address, unsigned char* buffer, int length) {
+    // This function reads "length" number of bytes, starting from the specified ...
+    // ... address, and puts them in the buffer passed as a pointer to the function
+    
+    address |= 0x80;                    // Make sure that msb is 1 (read flag)
+    spi_write(address);                 // Send register address
+    for (int i = 0; i < length; i++) {
+        buffer[i] = spi_write(0x00);    // Clock out zeros to read
+    }
+}
+
+void spi_write_address(unsigned char address, const unsigned char* data, int length) {
+    // This function takes "length" number of bytes from the provided data buffer and ...
+    // writes them to the slave device's addresses starting from the specified one
+
+    address &= 0x7F;                    // Make sure that msb is 0 (write flag)
+    spi_write(address);                 // Send register address
+    for (int i = 0; i < length; i++) {
+        spi_write(data[i]);             // Send data
+    }
 }
