@@ -65,8 +65,8 @@
 // live documentation
 void spi_init(void);
 unsigned int spi_write(unsigned int data);
+void spi_write_address(unsigned char address, unsigned char data);
 void spi_read_address(unsigned char address, unsigned char* buffer, int length);
-void spi_write_address(unsigned char address, const unsigned char* data, int length);
 
 #ifdef	__cplusplus
 extern "C" {

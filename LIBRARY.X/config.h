@@ -57,6 +57,7 @@
 // UART
 #define UART_BAUD_RATE 9600
 #define RX_BUFFER_SIZE 16
+#define TX_BUFFER_SIZE 16
 
 //SPI
 #define CS_ACC LATBbits.LATB3            

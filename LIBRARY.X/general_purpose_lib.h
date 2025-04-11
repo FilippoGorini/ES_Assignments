@@ -69,16 +69,18 @@ typedef struct {
     <p><b>Remarks:</b></p>
  */
 
-void set_digital_mode(void);
-void leds_init(void);
-void global_interrupt_enable(void);
-void algorithm(void);
+// TODO Insert declarations or function prototypes (right here) to leverage 
+// live documentation
+
 int Buffer_Init(volatile CircularBuffer* cb, volatile char* buf, unsigned int size);
 int Buffer_Write(volatile CircularBuffer* cb, char data);
 int Buffer_Read(volatile CircularBuffer* cb, char* data);
-
-// TODO Insert declarations or function prototypes (right here) to leverage 
-// live documentation
+void set_digital_mode(void);
+void leds_init(void);
+void lights_init(void);
+void global_interrupt_enable(void);
+void algorithm(void);
+void mag_sus2act(void);
 
 #ifdef	__cplusplus
 extern "C" {

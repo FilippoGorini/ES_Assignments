@@ -65,7 +65,10 @@
 // live documentation
 
 void uart_init(void);
-void uart_interrupt_enable(void);
+void uart_rx_interrupt_enable(void);
+void uart_rx_interrupt_disable(void);
+void uart_tx_interrupt_enable(void);
+void uart_tx_interrupt_disable(void);
 
 #ifdef	__cplusplus
 extern "C" {
