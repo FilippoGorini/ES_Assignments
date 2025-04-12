@@ -35,6 +35,7 @@
 
 // TODO Insert appropriate #include <>
 #include "config.h"
+#include "general_purpose_lib.h"
 
 // TODO Insert C++ class definitions if appropriate
 
@@ -65,10 +66,13 @@
 // live documentation
 
 void uart_init(void);
+void uart_rx_interrupt_mode_set();
+void uart_tx_interrupt_mode_set();
 void uart_rx_interrupt_enable(void);
 void uart_rx_interrupt_disable(void);
 void uart_tx_interrupt_enable(void);
 void uart_tx_interrupt_disable(void);
+void uart_send_string(CircularBuffer* tx_buf, const char* str_ptr);
 
 #ifdef	__cplusplus
 extern "C" {

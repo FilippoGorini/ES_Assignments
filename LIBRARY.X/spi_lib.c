@@ -51,13 +51,13 @@ void spi_write_address(unsigned char address, unsigned char data) {
     spi_write(data);                    // Send data
 }
 
-void spi_read_address(unsigned char address, unsigned char* buffer, int length) {
+void spi_read_address(unsigned char address, unsigned char* buf_ptr, int length) {
     // This function reads "length" number of bytes, starting from the specified ...
     // ... address, and puts them in the buffer passed as a pointer to the function
     
     address |= 0x80;                    // Make sure that msb is 1 (read flag)
     spi_write(address);                 // Send register address
     for (int i = 0; i < length; i++) {
-        buffer[i] = spi_write(0x00);    // Clock out zeros to read
+        buf_ptr[i] = spi_write(0x00);   // Clock out zeros to read
     }
 }

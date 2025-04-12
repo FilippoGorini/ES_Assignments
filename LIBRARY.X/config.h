@@ -57,7 +57,7 @@
 // UART
 #define UART_BAUD_RATE 9600
 #define RX_BUFFER_SIZE 16
-#define TX_BUFFER_SIZE 16
+#define TX_BUFFER_SIZE 64
 
 //SPI
 #define CS_ACC LATBbits.LATB3            
@@ -72,6 +72,8 @@
 #define LEDR LATFbits.LATF1
 #define LEDBRAKE LATGbits.LATG1
 #define LEDFRONT LATAbits.LATA7
+
+#define MAG_AVG_SAMPLES 5
 
 // Comment a function and leverage automatic documentation with slash star star
 /**

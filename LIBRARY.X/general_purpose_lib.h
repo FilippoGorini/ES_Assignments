@@ -34,7 +34,10 @@
 #include <xc.h> // include processor files - each processor file is guarded.  
 
 // TODO Insert appropriate #include <>
-#include "config.h"
+#include <stdlib.h>
+#include "general_purpose_lib.h"
+#include "timer_lib.h"
+#include "spi_lib.h"
 
 // TODO Insert C++ class definitions if appropriate
 
@@ -46,6 +49,14 @@ typedef struct {
     unsigned int size;             // total capacity of the buffer
     volatile char *buffer;         // pointer to the actual data array
 } volatile CircularBuffer;
+
+typedef struct {
+    int x[MAG_AVG_SAMPLES];
+    int y[MAG_AVG_SAMPLES];
+    int z[MAG_AVG_SAMPLES];
+    int index;                      // Next insertion index
+    int count;                      // Number of samples stored (max MAG_AVG_SAMPLES)
+} MagDataBuffer;
 
 // Comment a function and leverage automatic documentation with slash star star
 /**
@@ -72,15 +83,21 @@ typedef struct {
 // TODO Insert declarations or function prototypes (right here) to leverage 
 // live documentation
 
-int Buffer_Init(volatile CircularBuffer* cb, volatile char* buf, unsigned int size);
+int Buffer_Init(volatile CircularBuffer* cb, volatile char* buf_ptr, unsigned int size);
 int Buffer_Write(volatile CircularBuffer* cb, char data);
-int Buffer_Read(volatile CircularBuffer* cb, char* data);
+int Buffer_Read(volatile CircularBuffer* cb, char* data_ptr);
+void MagDataBuffer_Init(MagDataBuffer* mb);
+void MagDataBuffer_Write(MagDataBuffer* mb, int x, int y, int z);
+void MagDataBuffer_Average(MagDataBuffer* mb, int* avg_x, int* avg_y, int* avg_z);
 void set_digital_mode(void);
 void leds_init(void);
 void lights_init(void);
 void global_interrupt_enable(void);
 void algorithm(void);
 void mag_sus2act(void);
+void mag_read_axes(int* axes_ptr);
+void mag_read_axes_v2(int* axes_ptr);
+void mag_update_readings(MagDataBuffer* mb);
 
 #ifdef	__cplusplus
 extern "C" {
