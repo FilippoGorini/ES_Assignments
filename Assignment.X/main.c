@@ -47,6 +47,7 @@ int main(void) {
     unsigned int count_led = 0;             // Counter to toggle LED2    
     unsigned int count_mag_fb = 0;          // Counter to manage mag fb rate to the uart
     unsigned int count_mag_read = 0;        // Counter to manage mag reading
+    unsigned int count_yaw_fb = 5;          // Counter to manage yaw feedback
     unsigned int rate_mag_fb = 5;           // Magnetometer feedback rate [Hz]
     unsigned int cycles_mag_fb = 100 / rate_mag_fb;
     char rx_byte; 
@@ -72,6 +73,7 @@ int main(void) {
     
     // Setup interrupts
     global_interrupt_enable();
+    IFS0bits.U1RXIF = 0;        // Clear UART1 RX interrupt flag
     uart_rx_interrupt_enable();
     // NB: We don't enable the tx interrupt yet as it will be done by uart_send_string
  
@@ -104,7 +106,7 @@ int main(void) {
                     } 
                     else {
                         LEDBRAKE = 1;           /////// DEBUG ///////
-                        uart_send_string(&txBuffer, "$ERR,1*");
+                        uart_send_string(&txBuffer, "$ERR,1*\n");
                     }
                 }
             }
@@ -122,13 +124,25 @@ int main(void) {
                 int avg_x, avg_y, avg_z;
                 MagDataBuffer_Average(&magBuffer, &avg_x, &avg_y, &avg_z);  // Get average readings
                 char msg[32];
-                sprintf(msg, "$MAG,%d,%d,%d*", avg_x, avg_y, avg_z);    // Format message
+                sprintf(msg, "$MAG,%d,%d,%d*\n", avg_x, avg_y, avg_z);    // Format message
                 uart_send_string(&txBuffer, msg);
                 LEDL = !LEDL;                   /////// DEBUG ///////
                 LEDR = !LEDR;                   /////// DEBUG ///////
             }
             count_mag_fb = (count_mag_fb + 1) % cycles_mag_fb;   
         }
+        
+        // Handle yaw feedback at 5 Hz
+        if (count_yaw_fb == 0) {
+            int avg_x, avg_y, avg_z;
+            int angle_north;
+            MagDataBuffer_Average(&magBuffer, &avg_x, &avg_y, &avg_z); 
+            angle_north = (atan2(avg_y, avg_x) * 180) / M_PI;
+            char msg[16];
+            sprintf(msg, "$YAW,%d*\n", angle_north); 
+            uart_send_string(&txBuffer, msg);
+        }
+        count_yaw_fb = (count_yaw_fb + 1) % 20;
         
         // Handle LED2 blinking at 1 Hz
         if (count_led == 0) {

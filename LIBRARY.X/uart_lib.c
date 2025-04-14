@@ -56,6 +56,7 @@ void uart_tx_interrupt_disable() {
 
 void uart_send_string(CircularBuffer* tx_buf_ptr, const char* str_ptr) {
     while (*str_ptr) {
+    
         while (Buffer_Write(tx_buf_ptr, *str_ptr) == -1);  // Wait if full
         str_ptr++;
     }

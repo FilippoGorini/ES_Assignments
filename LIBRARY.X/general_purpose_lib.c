@@ -40,8 +40,6 @@ int Buffer_Read(volatile CircularBuffer* cb, char* data_ptr) {
     return 0;
 }
 
-
-// Initialize the averaging buffer
 void MagDataBuffer_Init(MagDataBuffer* mb) {
     mb->index = 0;
     mb->count = 0;
@@ -50,7 +48,6 @@ void MagDataBuffer_Init(MagDataBuffer* mb) {
     }
 }
 
-// Add a new set of raw magnetometer data
 void MagDataBuffer_Write(MagDataBuffer* mb, int x, int y, int z) {
     mb->x[mb->index] = x;
     mb->y[mb->index] = y;
@@ -60,7 +57,6 @@ void MagDataBuffer_Write(MagDataBuffer* mb, int x, int y, int z) {
         mb->count++;
 }
 
-// Compute the average values of the stored samples
 void MagDataBuffer_Average(MagDataBuffer* mb, int* avg_x, int* avg_y, int* avg_z) {
     long sum_x = 0, sum_y = 0, sum_z = 0;
     for (int i = 0; i < mb->count; i++) {
@@ -160,8 +156,8 @@ void mag_read_axes(int* axes_ptr) {
     
     msb = msb << 8;
     
-    int result_z = msb | (lsb & 0b11111000);
-    result_z = result_z / 8;
+    int result_z = msb | (lsb & 0b11111110);
+    result_z = result_z / 2;
 
     axes_ptr[0] = result_x;
     axes_ptr[1] = result_y;
@@ -170,50 +166,26 @@ void mag_read_axes(int* axes_ptr) {
 
 
 void mag_read_axes_v2(int* axes_ptr) {
-    /**
-    * @brief Reads X, Y, Z magnetic field axes using SPI burst read (standard types).
-    *
-    * @param axes Pointer to an array of 3 ints to store the results
-    * (axes[0]=X, axes[1]=Y, axes[2]=Z).
-    * @note Relies on 'int' being 16 bits and 'unsigned char' being 8 bits
-    * on the target platform (dsPIC33 with XC16).
-    * @note Assumes spi_read_address handles multi-byte reads correctly after
-    * sending the initial address with the read flag.
-    * @note Chip Select (CS) must be handled externally if spi_read_address
-    * does not manage it.
-    */
     
     unsigned char raw_data[6]; // Buffer for raw data
-
-    // --- Perform Burst Read ---
-    // Use the existing spi_read_address function from your spi_lib.h
-    CS_MAG = 0; // Assert CS (if not handled by spi_read_address)
+    
+    // Read raw data
+    CS_MAG = 0; 
     spi_read_address(0x42, raw_data, 6);
-    CS_MAG = 1; // De-assert CS (if not handled by spi_read_address)
+    CS_MAG = 1; 
 
-    // --- Process X-axis --- (Bytes 0=LSB, 1=MSB)
-    // LSB bits <7:3> are data <4:0>. MSB bits <7:0> are data <12:5>.
-    // Combine: (MSB << 8) | (LSB & 0xF8). Then shift right by 3.
-    // Casting MSB to 'int' ensures sign extension before shifting left.
-    // The division performs an arithmetic right shift, handling sign.
-    axes_ptr[0] = (int)(((int)raw_data[1] << 8) | (raw_data[0] & 0xF8)) / 8;
+    axes_ptr[0] = (int)(((int)raw_data[1] << 8) | (raw_data[0] & 0b11111000)) / 8;
 
-    // --- Process Y-axis --- (Bytes 2=LSB, 3=MSB)
-    // LSB bits <7:3> are data <4:0>. MSB bits <7:0> are data <12:5>.
-    // Combine: (MSB << 8) | (LSB & 0xF8). Then shift right by 3.
-    axes_ptr[1] = (int)(((int)raw_data[3] << 8) | (raw_data[2] & 0xF8)) / 8;
+    axes_ptr[1] = (int)(((int)raw_data[3] << 8) | (raw_data[2] & 0b11111000)) / 8;
 
-    // --- Process Z-axis --- (Bytes 4=LSB, 5=MSB)
-    // LSB bits <7:1> are data <6:0>. MSB bits <7:0> are data <14:7>.
-    // Combine: (MSB << 8) | (LSB & 0xFE). Then shift right by 1.
-    axes_ptr[2] = (int)(((int)raw_data[5] << 8) | (raw_data[4] & 0xFE)) / 2;
+    axes_ptr[2] = (int)(((int)raw_data[5] << 8) | (raw_data[4] & 0b11111110)) / 2;
 }
 
 // This function calls mag_read_axes(), and then adds the new readings into the averaging buffer.
 void mag_update_readings(MagDataBuffer* mb) {
     int raw_axes[3];
     // Read raw axes
-    mag_read_axes_v2(raw_axes);  
+    mag_read_axes(raw_axes);  
     // Update MagDataBuffer pointed to by mb with the new measurements
     MagDataBuffer_Write(mb, raw_axes[0], raw_axes[1], raw_axes[2]);
 }
