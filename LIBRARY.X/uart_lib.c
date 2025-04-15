@@ -56,8 +56,12 @@ void uart_tx_interrupt_disable() {
 
 void uart_send_string(CircularBuffer* tx_buf_ptr, const char* str_ptr) {
     while (*str_ptr) {
-    
-        while (Buffer_Write(tx_buf_ptr, *str_ptr) == -1);  // Wait if full
+//        IEC0bits.U1TXIE = 0;
+        while (Buffer_Write(tx_buf_ptr, *str_ptr) == -1) {
+            LEDFRONT = 1;
+        }  // Wait if full
+        LEDFRONT = 0;
+//        IEC0bits.U1TXIE = 1;
         str_ptr++;
     }
 
@@ -75,5 +79,6 @@ void uart_send_string(CircularBuffer* tx_buf_ptr, const char* str_ptr) {
                 U1TXREG = byte;
             }
         }
+//        else IEC0bits.U1TXIE = 1;
     }
 }

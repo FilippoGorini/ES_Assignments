@@ -19,9 +19,14 @@ MagDataBuffer magBuffer;
 void __attribute__((__interrupt__, no_auto_psv)) _U1RXInterrupt(void) {
     
     IFS0bits.U1RXIF = 0;                // Clear interrupt flag
-    char received_byte = U1RXREG;       // Read received character
-    if (Buffer_Write(&rxBuffer, received_byte) == -1) {
-        // OVERFLOW ERROR
+    // Ready bytes from FIFO until the're available. If by any chance we had more than ...
+    // ... one byte in the FIFO this allows to read them all and avoid the risk ...
+    // ... of accumulating them until the FIFO overruns
+    while (U1STAbits.URXDA) {
+        char received_byte = U1RXREG;       // Read received character
+        if (Buffer_Write(&rxBuffer, received_byte) == -1) {
+            // OVERFLOW ERROR
+        }
     }
 }
 
@@ -47,7 +52,7 @@ int main(void) {
     unsigned int count_led = 0;             // Counter to toggle LED2    
     unsigned int count_mag_fb = 0;          // Counter to manage mag fb rate to the uart
     unsigned int count_mag_read = 0;        // Counter to manage mag reading
-    unsigned int count_yaw_fb = 5;          // Counter to manage yaw feedback
+    unsigned int count_yaw_fb = 7;          // Counter to manage yaw feedback
     unsigned int rate_mag_fb = 5;           // Magnetometer feedback rate [Hz]
     unsigned int cycles_mag_fb = 100 / rate_mag_fb;
     char rx_byte; 
