@@ -23,7 +23,7 @@ void uart_init() {
     uart_tx_interrupt_mode_set();
     
     U1MODEbits.UARTEN = 1;              // Enable UART1
-    U1STAbits.UTXEN = 1;                // Enable U1TX (transmission) 
+    U1STAbits.UTXEN = 1;                // Enable U1TX (this also lifts the U1TXIF flag!)
 }
 
 void uart_rx_interrupt_mode_set() {
@@ -37,8 +37,7 @@ void uart_tx_interrupt_mode_set() {
 }
 
 void uart_rx_interrupt_enable() {
-    IFS0bits.U1RXIF = 0;        // Clear UART1 RX interrupt flag
-    IEC0bits.U1RXIE = 1;        // Enable UART1 RX interrupt
+    IEC0bits.U1RXIE = 1;  
 }
 
 void uart_rx_interrupt_disable() {
@@ -46,8 +45,7 @@ void uart_rx_interrupt_disable() {
 }
 
 void uart_tx_interrupt_enable() {
-    IFS0bits.U1TXIF = 0;        // Clear UART1 TX interrupt flag
-    IEC0bits.U1TXIE = 1;        // Enable UART1 TX interrupt
+    IEC0bits.U1TXIE = 1;     
 }
 
 void uart_tx_interrupt_disable() {
@@ -55,30 +53,16 @@ void uart_tx_interrupt_disable() {
 }
 
 void uart_send_string(CircularBuffer* tx_buf_ptr, const char* str_ptr) {
+    // Iterate on every character of the string and add it to the txBuffer
     while (*str_ptr) {
-//        IEC0bits.U1TXIE = 0;
-        while (Buffer_Write(tx_buf_ptr, *str_ptr) == -1) {
-            LEDFRONT = 1;
-        }  // Wait if full
-        LEDFRONT = 0;
-//        IEC0bits.U1TXIE = 1;
+        // We create a critical section disabling the interrupt around the ...
+        // ... Buffer_Write to protect it from interrupts
+        uart_tx_interrupt_disable();
+        while (Buffer_Write(tx_buf_ptr, *str_ptr) == -1);   // Wait if full (IT SHOULDN'T HAPPEN IN THEORY, LOOK IN THE CONFIG.H FOR COMPUTATIONS)
+        uart_tx_interrupt_enable();
+        // During the first call to uart_send_string, the UTXEN in the init already ...
+        // ... lifted the flag U1TXIF, so the ISR will be triggered as soon as we enable ...
+        // ... the interrupt for the first time
         str_ptr++;
-    }
-
-    // Manually transmit the first byte of the string in order to kickstart the ...
-    // ... transmission of the next bytes trough the ISR
-    if (!IEC0bits.U1TXIE) {
-        if (!U1STAbits.UTXBF) {
-            char byte;
-            if (Buffer_Read(tx_buf_ptr, &byte) == 0) {
-                // NB: Here order is important: swapping the next two lines results ...
-                // ... in the the interrupt flag being set before the call of the ...
-                // ... uart_tx_interrupt_enable function, which resets it before ...
-                // ... enabling the interrupts, so the ISR never fires. This also results in the main loop getting stuck!
-                uart_tx_interrupt_enable();
-                U1TXREG = byte;
-            }
-        }
-//        else IEC0bits.U1TXIE = 1;
     }
 }

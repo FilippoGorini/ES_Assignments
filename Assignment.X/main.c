@@ -14,19 +14,23 @@ volatile CircularBuffer rxBuffer;
 volatile char tx_buffer_array[TX_BUFFER_SIZE];
 volatile CircularBuffer txBuffer;
 MagDataBuffer magBuffer;
+int missed_rx_bytes = 0;
 
 
 void __attribute__((__interrupt__, no_auto_psv)) _U1RXInterrupt(void) {
     
     IFS0bits.U1RXIF = 0;                // Clear interrupt flag
-    // Ready bytes from FIFO until the're available. If by any chance we had more than ...
+    // Read bytes from FIFO until the're available. If by any chance we had more than ...
     // ... one byte in the FIFO this allows to read them all and avoid the risk ...
     // ... of accumulating them until the FIFO overruns
     while (U1STAbits.URXDA) {
         char received_byte = U1RXREG;       // Read received character
         if (Buffer_Write(&rxBuffer, received_byte) == -1) {
-            // OVERFLOW ERROR
+            // If the rxBuffer is full, the received_byte is lost, so we could ...
+            // ... increase a counter to keep track of how many bytes we lost
+            missed_rx_bytes ++;
         }
+        // As soon as there is no more data available in the FIFO we exit the loop and the ISR
     }
 }
 
@@ -35,20 +39,22 @@ void __attribute__((__interrupt__, no_auto_psv)) _U1TXInterrupt(void) {
     
     IFS0bits.U1TXIF = 0;
     char byte;
-    if (Buffer_Read(&txBuffer, &byte) == 0) {
-        U1TXREG = byte;
-    } else {
-        // If txBuffer is empty, there are no more characters to be sent for now so ...
-        // ... we disable the tx interrupt. It will be reenabled by the uart_send_string ...
-        // ... function once new characters are ready to be sent
-        uart_tx_interrupt_disable();
+    while (!U1STAbits.UTXBF) {
+        if (Buffer_Read(&txBuffer, &byte) == 0) {
+            U1TXREG = byte;
+        } else {
+            uart_tx_interrupt_disable();
+            // If txBuffer is empty, there are no more characters to be sent for now so ...
+            // ... we disable the tx interrupt. It will be reenabled by the uart_send_string ...
+            // ... function once new characters are added to the txBuffer
+            break;  // Exit the loop to avoid getting stuck in a infinite loop
+        }
     }
 }
 
 
 int main(void) {
     
-//    int ret = 0;
     unsigned int count_led = 0;             // Counter to toggle LED2    
     unsigned int count_mag_fb = 0;          // Counter to manage mag fb rate to the uart
     unsigned int count_mag_read = 0;        // Counter to manage mag reading
@@ -78,9 +84,8 @@ int main(void) {
     
     // Setup interrupts
     global_interrupt_enable();
-    IFS0bits.U1RXIF = 0;        // Clear UART1 RX interrupt flag
     uart_rx_interrupt_enable();
-    // NB: We don't enable the tx interrupt yet as it will be done by uart_send_string
+    // NB: We don't enable the tx interrupt yet as it will be done by uart_send_string once needed
  
     // Setup timers
     tmr_setup_period(TIMER1, 10);           // Setup TIMER1 to time main loop at 100 Hz

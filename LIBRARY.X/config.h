@@ -57,7 +57,19 @@
 // UART
 #define UART_BAUD_RATE 9600
 #define RX_BUFFER_SIZE 16
-#define TX_BUFFER_SIZE 128
+// Because at 9600 bps we need about 1 ms to receive 1 byte, and considering that ...
+// the main loop empties the buffer every 10 ms, in the worst case up to 10 bytes ...
+// ... could accumulate. A 16 byte rxBuffer should be sufficient and not overflow
+#define TX_BUFFER_SIZE 64
+// Because x, y, z and angle_north are signed ints, they can be represented with 6 ...
+// ... (5+1 for the sign) characters. Therefore, in the worst case we have:
+// - $MAG,x,y,z*\n = 27 bytes every 100 ms (when rate_mag_fb is set to 10 Hz)
+// - $YAW,angle*\n = 13 bytes every 200 ms (rate_yaw_fb = 5 Hz)
+// - $ERR,1*\n = 8 bytes sporadically
+// In total we have 48 bytes to transmit every 200 ms (assuming no more than 1 error ...
+// ... message every 200 ms is needed). At 9600 bps, a byte requires about 1 ms, ...
+// ... so the 48 bytes should take no more than 50 ms to fully transmit. Therefore, ...
+// ... a 64 byte txBuffer should suffice and never overflow
 
 //SPI
 #define CS_ACC LATBbits.LATB3            
@@ -68,11 +80,13 @@
 #define LED1 LATAbits.LATA0
 #define LED2 LATGbits.LATG9
 
+// LIGHTS
 #define LEDL LATBbits.LATB8 
 #define LEDR LATFbits.LATF1
 #define LEDBRAKE LATGbits.LATG1
 #define LEDFRONT LATAbits.LATA7
 
+// MAGNETOMETER
 #define MAG_AVG_SAMPLES 5
 
 // Comment a function and leverage automatic documentation with slash star star
