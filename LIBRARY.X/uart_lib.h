@@ -72,7 +72,7 @@ void uart_rx_interrupt_enable(void);
 void uart_rx_interrupt_disable(void);
 void uart_tx_interrupt_enable(void);
 void uart_tx_interrupt_disable(void);
-void uart_send_string(CircularBuffer* tx_buf, const char* str_ptr);
+int uart_send_string(CircularBuffer* tx_buf, const char* str_ptr);
 
 #ifdef	__cplusplus
 extern "C" {

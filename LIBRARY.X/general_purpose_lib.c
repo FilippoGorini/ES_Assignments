@@ -106,7 +106,7 @@ void global_interrupt_enable(void) {
 
 void algorithm (void) {
     // Simulates an algorithm which takes 7 ms to execute
-    tmr_wait_ms(TIMER2, 7);
+        tmr_wait_ms(TIMER2, 7);
 }
 
 void mag_sus2act(void) {
@@ -123,66 +123,20 @@ void mag_sus2act(void) {
 }
 
 void mag_read_axes(int* axes_ptr) {
-    unsigned int lsb;
-    unsigned int msb;
     
-    CS_MAG = 0;
-    spi_write(0x42 | 0x80);
-    lsb = spi_write(0x00);
-    msb = spi_write(0x00);
-    CS_MAG = 1;
-    
-    msb = msb << 8;
-    
-    int result_x = msb | (lsb & 0b11111000);
-    result_x = result_x / 8;
-    
-    CS_MAG = 0;
-    spi_write(0x44 | 0x80);
-    lsb = spi_write(0x00);
-    msb = spi_write(0x00);
-    CS_MAG = 1;
-    
-    msb = msb << 8;
-    
-    int result_y = msb | (lsb & 0b11111000);
-    result_y = result_y / 8;
-    
-    CS_MAG = 0;
-    spi_write(0x46 | 0x80);
-    lsb = spi_write(0x00);
-    msb = spi_write(0x00);
-    CS_MAG = 1;
-    
-    msb = msb << 8;
-    
-    int result_z = msb | (lsb & 0b11111110);
-    result_z = result_z / 2;
-
-    axes_ptr[0] = result_x;
-    axes_ptr[1] = result_y;
-    axes_ptr[2] = result_z;
-}
-
-
-void mag_read_axes_v2(int* axes_ptr) {
-    
-    unsigned char raw_data[6]; // Buffer for raw data
-    
+    unsigned char raw_data[6]; // Buffer for raw data 
     // Read raw data
     CS_MAG = 0; 
     spi_read_address(0x42, raw_data, 6);
     CS_MAG = 1; 
 
     axes_ptr[0] = (int)(((int)raw_data[1] << 8) | (raw_data[0] & 0b11111000)) / 8;
-
     axes_ptr[1] = (int)(((int)raw_data[3] << 8) | (raw_data[2] & 0b11111000)) / 8;
-
     axes_ptr[2] = (int)(((int)raw_data[5] << 8) | (raw_data[4] & 0b11111110)) / 2;
 }
 
-// This function calls mag_read_axes(), and then adds the new readings into the averaging buffer.
 void mag_update_readings(MagDataBuffer* mb) {
+    // This function calls mag_read_axes(), and then adds the new readings into the averaging buffer.
     int raw_axes[3];
     // Read raw axes
     mag_read_axes(raw_axes);  

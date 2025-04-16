@@ -15,6 +15,7 @@ volatile char tx_buffer_array[TX_BUFFER_SIZE];
 volatile CircularBuffer txBuffer;
 MagDataBuffer magBuffer;
 int missed_rx_bytes = 0;
+int missed_tx_bytes = 0;
 
 
 void __attribute__((__interrupt__, no_auto_psv)) _U1RXInterrupt(void) {
@@ -116,8 +117,15 @@ int main(void) {
                     } 
                     else {
                         LEDBRAKE = 1;           /////// DEBUG ///////
-                        uart_send_string(&txBuffer, "$ERR,1*\n");
+                        missed_tx_bytes += uart_send_string(&txBuffer, "$ERR,1*\n");
                     }
+                }
+                // OPTIONAL: feedback about missed rx/tx bytes when the user ...
+                // ... sends the command $MISS*
+                else if (strcmp(ps.msg_type, "MISS") == 0) {
+                    char msg[16];
+                    sprintf(msg, "$MISS,%d,%d*\n", missed_rx_bytes, missed_tx_bytes);  
+                    missed_tx_bytes += uart_send_string(&txBuffer, msg);
                 }
             }
         }
@@ -135,7 +143,7 @@ int main(void) {
                 MagDataBuffer_Average(&magBuffer, &avg_x, &avg_y, &avg_z);  // Get average readings
                 char msg[32];
                 sprintf(msg, "$MAG,%d,%d,%d*\n", avg_x, avg_y, avg_z);    // Format message
-                uart_send_string(&txBuffer, msg);
+                missed_tx_bytes += uart_send_string(&txBuffer, msg);
                 LEDL = !LEDL;                   /////// DEBUG ///////
                 LEDR = !LEDR;                   /////// DEBUG ///////
             }
@@ -150,7 +158,7 @@ int main(void) {
             angle_north = (atan2(avg_y, avg_x) * 180) / M_PI;
             char msg[16];
             sprintf(msg, "$YAW,%d*\n", angle_north); 
-            uart_send_string(&txBuffer, msg);
+            missed_tx_bytes += uart_send_string(&txBuffer, msg);
         }
         count_yaw_fb = (count_yaw_fb + 1) % 20;
         

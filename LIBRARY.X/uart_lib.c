@@ -52,17 +52,22 @@ void uart_tx_interrupt_disable() {
     IEC0bits.U1TXIE = 0;
 }
 
-void uart_send_string(CircularBuffer* tx_buf_ptr, const char* str_ptr) {
+int uart_send_string(CircularBuffer* tx_buf_ptr, const char* str_ptr) {
+    int missed_bytes = 0;
     // Iterate on every character of the string and add it to the txBuffer
     while (*str_ptr) {
         // We create a critical section disabling the interrupt around the ...
         // ... Buffer_Write to protect it from interrupts
         uart_tx_interrupt_disable();
-        while (Buffer_Write(tx_buf_ptr, *str_ptr) == -1);   // Wait if full (IT SHOULDN'T HAPPEN IN THEORY, LOOK IN THE CONFIG.H FOR COMPUTATIONS)
+        if (Buffer_Write(tx_buf_ptr, *str_ptr) == -1) {
+            missed_bytes ++;
+        }
         uart_tx_interrupt_enable();
         // During the first call to uart_send_string, the UTXEN in the init already ...
         // ... lifted the flag U1TXIF, so the ISR will be triggered as soon as we enable ...
         // ... the interrupt for the first time
         str_ptr++;
     }
+    // Lift flag for safety?
+    return missed_bytes;
 }
