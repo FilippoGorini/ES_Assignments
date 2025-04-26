@@ -28,6 +28,7 @@ void spi_init() {
     SPI1CON1bits.SPRE = 0b101;          // Secondary prescaler: 3:1
     SPI1CON1bits.CKP = 1;               // Clock idle state = 1
     SPI1CON1bits.CKE = 0;               // Master writes data on falling edge
+    // These last two settings correspond to SPI mode 3
 
     // Enable SPI
     SPI1STATbits.SPIEN = 1;           

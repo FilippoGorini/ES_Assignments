@@ -68,11 +68,23 @@
 void uart_init(void);
 void uart_rx_interrupt_mode_set();
 void uart_tx_interrupt_mode_set();
-void uart_rx_interrupt_enable(void);
-void uart_rx_interrupt_disable(void);
-void uart_tx_interrupt_enable(void);
-void uart_tx_interrupt_disable(void);
 int uart_send_string(CircularBuffer* tx_buf, const char* str_ptr);
+
+// These functions are called multiple times when accessing rx/tx circular buffers ...
+// ... in order to protect them from the interrupts. They're defined in here as ...
+// ... static inline in order to eliminate the function call overhead
+static inline void uart_rx_interrupt_enable(void) {
+    IEC0bits.U1RXIE = 1;
+}
+static inline void uart_rx_interrupt_disable(void) {
+    IEC0bits.U1RXIE = 0;
+}
+static inline void uart_tx_interrupt_enable(void) {
+    IEC0bits.U1TXIE = 1;
+}
+static inline void uart_tx_interrupt_disable(void) {
+    IEC0bits.U1TXIE = 0;
+}
 
 #ifdef	__cplusplus
 extern "C" {

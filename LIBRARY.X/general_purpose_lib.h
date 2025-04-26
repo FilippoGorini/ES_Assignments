@@ -96,7 +96,6 @@ void global_interrupt_enable(void);
 void algorithm(void);
 void mag_sus2act(void);
 void mag_read_axes(int* axes_ptr);
-void mag_read_axes_v2(int* axes_ptr);
 void mag_update_readings(MagDataBuffer* mb);
 
 #ifdef	__cplusplus

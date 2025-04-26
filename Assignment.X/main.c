@@ -14,14 +14,14 @@ volatile CircularBuffer rxBuffer;
 volatile char tx_buffer_array[TX_BUFFER_SIZE];
 volatile CircularBuffer txBuffer;
 MagDataBuffer magBuffer;
-int missed_rx_bytes = 0;
-int missed_tx_bytes = 0;
+unsigned int missed_rx_bytes = 0;
+unsigned int missed_tx_bytes = 0;
 
 
 void __attribute__((__interrupt__, no_auto_psv)) _U1RXInterrupt(void) {
     
     IFS0bits.U1RXIF = 0;                // Clear interrupt flag
-    // Read bytes from FIFO until the're available. If by any chance we had more than ...
+    // Read bytes from FIFO until they're available. If by any chance we had more than ...
     // ... one byte in the FIFO this allows to read them all and avoid the risk ...
     // ... of accumulating them until the FIFO overruns
     while (U1STAbits.URXDA) {
@@ -57,9 +57,19 @@ void __attribute__((__interrupt__, no_auto_psv)) _U1TXInterrupt(void) {
 int main(void) {
     
     unsigned int count_led = 0;             // Counter to toggle LED2    
-    unsigned int count_mag_fb = 0;          // Counter to manage mag fb rate to the uart
-    unsigned int count_mag_read = 0;        // Counter to manage mag reading
-    unsigned int count_yaw_fb = 7;          // Counter to manage yaw feedback
+    unsigned int count_mag_fb = 2;          // Counter to manage mag fb rate to the uart
+    unsigned int count_mag_read = 3;        // Counter to manage mag reading
+    unsigned int count_yaw_fb = 0;          // Counter to manage yaw feedback
+    // With this initial offsets, we ensure that the magnetometer reading, feedback ...
+    // ... and yaw feedback never happen in the same loop (at least until we change ...
+    // ... the rate of the magnetometer feedback). Furthermore, the yaw and mag feedback is calculated ...
+    // ... for the first time after the first 5 samples to average are acquired.
+    // ... NB: as of now, after we chan$MISS*ge the rate we could be unlucky and have the mag ...
+    // ... reading and feedback happen in the same loop, anyway this doesn't seem ...
+    // ... to cause missed deadlines. A possible improvement would be, whenever we update ...
+    // ... the rate, to also reset the counter in such a way that the next feedback happens ...
+    // ... exactly one loop after the next magnetometer reading. This would ensure that still ...
+    // ... there is no overlap, anyway for now this is overkill.
     unsigned int rate_mag_fb = 5;           // Magnetometer feedback rate [Hz]
     unsigned int cycles_mag_fb = 100 / rate_mag_fb;
     char rx_byte; 
@@ -98,7 +108,14 @@ int main(void) {
         // This loop parses one by one all the new, unread bytes in the rxBuffer
         // If a "RATE" message is detected, the rate_mag_fb is updated
         // If an invalid rate is detected, a error message is sent on the uart
-        while (Buffer_Read(&rxBuffer, &rx_byte) == 0) {
+        while (1) {
+            // Critical section to protect the read buffer operation
+            uart_rx_interrupt_disable();
+            int read_result = Buffer_Read(&rxBuffer, &rx_byte);
+            uart_rx_interrupt_enable();
+            
+            if (read_result == -1) break;       // Break the loop if the rxBuffer is empty
+            
             // Feed each received byte into the parser.
             if (parse_byte(&ps, rx_byte) == NEW_MESSAGE) {          // We have a complete message.
                 if (strcmp(ps.msg_type, "RATE") == 0) {             // Check if it is the $RATE command.
@@ -123,7 +140,7 @@ int main(void) {
                 // OPTIONAL: feedback about missed rx/tx bytes when the user ...
                 // ... sends the command $MISS*
                 else if (strcmp(ps.msg_type, "MISS") == 0) {
-                    char msg[16];
+                    char msg[32];
                     sprintf(msg, "$MISS,%d,%d*\n", missed_rx_bytes, missed_tx_bytes);  
                     missed_tx_bytes += uart_send_string(&txBuffer, msg);
                 }
@@ -131,27 +148,26 @@ int main(void) {
         }
         
         // Handle magnetometer reading at 25 Hz
-        if (count_mag_read == 0) {
+        if (++count_mag_read >= 4) {
+            count_mag_read = 0;
             mag_update_readings(&magBuffer);
         }
-        count_mag_read = (count_mag_read + 1) % 4;
         
         // Handle magnetometer uart feedback at <rate_mag_fb> Hz
-        if (rate_mag_fb > 0) {
-            if (count_mag_fb == 0) {
-                int avg_x, avg_y, avg_z;
-                MagDataBuffer_Average(&magBuffer, &avg_x, &avg_y, &avg_z);  // Get average readings
-                char msg[32];
-                sprintf(msg, "$MAG,%d,%d,%d*\n", avg_x, avg_y, avg_z);    // Format message
-                missed_tx_bytes += uart_send_string(&txBuffer, msg);
-                LEDL = !LEDL;                   /////// DEBUG ///////
-                LEDR = !LEDR;                   /////// DEBUG ///////
-            }
-            count_mag_fb = (count_mag_fb + 1) % cycles_mag_fb;   
-        }
+        if (++count_mag_fb >= cycles_mag_fb && rate_mag_fb > 0) {
+            count_mag_fb = 0;
+            int avg_x, avg_y, avg_z;
+            MagDataBuffer_Average(&magBuffer, &avg_x, &avg_y, &avg_z);  // Get average readings
+            char msg[32];
+            sprintf(msg, "$MAG,%d,%d,%d*\n", avg_x, avg_y, avg_z);    // Format message
+            missed_tx_bytes += uart_send_string(&txBuffer, msg);
+            LEDL = !LEDL;                   /////// DEBUG ///////
+            LEDR = !LEDR;                   /////// DEBUG ///////
+        }  
         
         // Handle yaw feedback at 5 Hz
-        if (count_yaw_fb == 0) {
+        if (++count_yaw_fb >= 20) {
+            count_yaw_fb = 0;
             int avg_x, avg_y, avg_z;
             int angle_north;
             MagDataBuffer_Average(&magBuffer, &avg_x, &avg_y, &avg_z); 
@@ -160,13 +176,12 @@ int main(void) {
             sprintf(msg, "$YAW,%d*\n", angle_north); 
             missed_tx_bytes += uart_send_string(&txBuffer, msg);
         }
-        count_yaw_fb = (count_yaw_fb + 1) % 20;
         
         // Handle LED2 blinking at 1 Hz
-        if (count_led == 0) {
+        if (count_led >= 50) {
+            count_led = 0;
             LED2 = !LED2;
         }
-        count_led = (count_led + 1) % 50;
         
         // Wait until next period
         if (tmr_wait_period(TIMER1) == 1) {     // If expired

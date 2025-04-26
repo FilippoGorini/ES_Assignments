@@ -1,6 +1,8 @@
 #ifndef PARSER_LIB_H
 #define	PARSER_LIB_H
 
+#include "config.h"         // Add include to config.h header to have access to the CMD macros
+
 #define STATE_DOLLAR  (1)   // we discard everything until a dollar is found
 #define STATE_TYPE    (2)   // we are reading the type of msg until a comma is found
 #define STATE_PAYLOAD (3)   // we read the payload until an asterix is found

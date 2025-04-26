@@ -186,6 +186,10 @@
         <property key="relaxed-math" value="false"/>
         <property key="save-temps" value="false"/>
       </C30Global>
+      <item path="pwm_lib.c" ex="true" overriding="false">
+      </item>
+      <item path="pwm_lib.h" ex="true" overriding="false">
+      </item>
     </conf>
   </confs>
 </configurationDescriptor>

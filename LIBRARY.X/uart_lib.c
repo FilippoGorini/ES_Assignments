@@ -36,22 +36,6 @@ void uart_tx_interrupt_mode_set() {
     U1STAbits.UTXISEL0 = 0;     // ... a byte is transferred into the TSR (at least 1 free slot in the FIFO)
 }
 
-void uart_rx_interrupt_enable() {
-    IEC0bits.U1RXIE = 1;  
-}
-
-void uart_rx_interrupt_disable() {
-    IEC0bits.U1RXIE = 0;
-}
-
-void uart_tx_interrupt_enable() {
-    IEC0bits.U1TXIE = 1;     
-}
-
-void uart_tx_interrupt_disable() {
-    IEC0bits.U1TXIE = 0;
-}
-
 int uart_send_string(CircularBuffer* tx_buf_ptr, const char* str_ptr) {
     int missed_bytes = 0;
     // Iterate on every character of the string and add it to the txBuffer
@@ -59,7 +43,7 @@ int uart_send_string(CircularBuffer* tx_buf_ptr, const char* str_ptr) {
         // We create a critical section disabling the interrupt around the ...
         // ... Buffer_Write to protect it from interrupts
         uart_tx_interrupt_disable();
-        if (Buffer_Write(tx_buf_ptr, *str_ptr) == -1) {
+        if (Buffer_Write(tx_buf_ptr, *str_ptr) == -1) {         // Non-blocking write
             missed_bytes ++;
         }
         uart_tx_interrupt_enable();
@@ -68,6 +52,5 @@ int uart_send_string(CircularBuffer* tx_buf_ptr, const char* str_ptr) {
         // ... the interrupt for the first time
         str_ptr++;
     }
-    // Lift flag for safety?
     return missed_bytes;
 }
