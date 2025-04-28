@@ -46,11 +46,15 @@ int uart_send_string(CircularBuffer* tx_buf_ptr, const char* str_ptr) {
         if (Buffer_Write(tx_buf_ptr, *str_ptr) == -1) {         // Non-blocking write
             missed_bytes ++;
         }
-        uart_tx_interrupt_enable();
         // During the first call to uart_send_string, the UTXEN in the init already ...
         // ... lifted the flag U1TXIF, so the ISR will be triggered as soon as we enable ...
-        // ... the interrupt for the first time
+        // ... the interrupt for the first time.
+        // Anyway, we manually lift the flag for safety:
+        IFS0bits.U1TXIF = 1;    
+        uart_tx_interrupt_enable();
+ 
         str_ptr++;
     }
+    
     return missed_bytes;
 }
