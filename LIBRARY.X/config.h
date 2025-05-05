@@ -96,7 +96,7 @@
 #define PWMC LATDbits.LATD3 
 #define PWMD LATDbits.LATD4 
 #define PWM_FREQ 10000UL
-#define PWM_PERIOD (FCY/PWM_FREQ)
+#define PWM_PERIOD_TICKS (FCY/PWM_FREQ)
 
 // Comment a function and leverage automatic documentation with slash star star
 /**

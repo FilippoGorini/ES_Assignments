@@ -146,73 +146,57 @@ void mag_update_readings(MagDataBuffer* mb) {
 }
 
 void move_forward(void) {
-    RPOR0bits.RP65R = 0b000000;
-    RPOR1bits.RP66R = 0b010000;     // OC1 ---> PWM B
-    RPOR1bits.RP67R = 0b000000;
-    RPOR2bits.RP68R = 0b010000;     // OC1 ---> PWM D
-    PWMA = 0;
-    PWMC = 0;
+    oc1_set_duty(0);
+    oc2_set_duty(100);
+    oc3_set_duty(0);
+    oc4_set_duty(100);
 }
 
 void move_backward(void) {
-    RPOR0bits.RP65R = 0b010000;     // OC1 ---> PWM A
-    RPOR1bits.RP66R = 0b000000;
-    RPOR1bits.RP67R = 0b010000;     // OC1 ---> PWM C
-    RPOR2bits.RP68R = 0b000000;
-    PWMB = 0;
-    PWMD = 0;
+    oc1_set_duty(100);
+    oc2_set_duty(0);
+    oc3_set_duty(100);
+    oc4_set_duty(0);
 }
 
 void rotate_right(void) {
-    RPOR0bits.RP65R = 0b000000;
-    RPOR1bits.RP66R = 0b010000;     // OC1 ---> PWM B
-    RPOR1bits.RP67R = 0b010000;     // OC1 ---> PWM C
-    RPOR2bits.RP68R = 0b000000;
-    PWMA = 0;
-    PWMD = 0;
+    oc1_set_duty(0);
+    oc2_set_duty(100);
+    oc3_set_duty(100);
+    oc4_set_duty(0);
 }
 
 void rotate_left(void) {
-    RPOR0bits.RP65R = 0b010000;     // OC1 ---> PWM A
-    RPOR1bits.RP66R = 0b000000;
-    RPOR1bits.RP67R = 0b000000;
-    RPOR2bits.RP68R = 0b010000;     // OC1 ---> PWM D
-    PWMB = 0;
-    PWMC = 0;
+    oc1_set_duty(100);
+    oc2_set_duty(0);
+    oc3_set_duty(0);
+    oc4_set_duty(100);
 }
 
 void turn_right_forward(void) {
-    RPOR0bits.RP65R = 0b000000;
-    RPOR1bits.RP66R = 0b010000;     // OC1 ---> PWM B
-    RPOR1bits.RP67R = 0b000000;
-    RPOR2bits.RP68R = 0b010001;     // OC2 ---> PWM D
-    PWMA = 0;
-    PWMC = 0;
+    oc1_set_duty(0);
+    oc2_set_duty(100);
+    oc3_set_duty(0);
+    oc4_set_duty(70);
 }
 
 void turn_left_forward(void) {
-    RPOR0bits.RP65R = 0b000000;
-    RPOR1bits.RP66R = 0b010001;     // OC2 ---> PWM B
-    RPOR1bits.RP67R = 0b000000;
-    RPOR2bits.RP68R = 0b010000;     // OC1 ---> PWM D
-    PWMA = 0;
-    PWMC = 0;
+    oc1_set_duty(0);
+    oc2_set_duty(70);
+    oc3_set_duty(0);
+    oc4_set_duty(100);
 }
 
 void turn_right_backward(void) {
-    RPOR0bits.RP65R = 0b010000;     // OC1 ---> PWM A
-    RPOR1bits.RP66R = 0b000000;
-    RPOR1bits.RP67R = 0b010001;     // OC2 ---> PWM C
-    RPOR2bits.RP68R = 0b000000;
-    PWMB = 0;
-    PWMD = 0;
+    oc1_set_duty(100);
+    oc2_set_duty(0);
+    oc3_set_duty(70);
+    oc4_set_duty(0);
 }
 
 void turn_left_backward(void) {
-    RPOR0bits.RP65R = 0b010001;     // OC2 ---> PWM A
-    RPOR1bits.RP66R = 0b000000;
-    RPOR1bits.RP67R = 0b010000;     // OC1 ---> PWM C
-    RPOR2bits.RP68R = 0b000000;
-    PWMB = 0;
-    PWMD = 0;
+    oc1_set_duty(70);
+    oc2_set_duty(0);
+    oc3_set_duty(100);
+    oc4_set_duty(0);
 }

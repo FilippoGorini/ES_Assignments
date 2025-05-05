@@ -5,47 +5,66 @@
 void oc_init(void) {
     OC1CON1bits.OCTSEL = 7;     // Use internal clock (FCY))
     OC2CON1bits.OCTSEL = 7;
+    OC3CON1bits.OCTSEL = 7;
+    OC4CON1bits.OCTSEL = 7;
     OC1CON2bits.SYNCSEL = 0x1F;
     OC2CON2bits.SYNCSEL = 0x1F;   
-    OC1RS = PWM_PERIOD;         // Set 10 kHz pwm period
-    OC2RS = PWM_PERIOD; 
+    OC3CON2bits.SYNCSEL = 0x1F;  
+    OC4CON2bits.SYNCSEL = 0x1F;  
+    OC1RS = PWM_PERIOD_TICKS;         // Set 10 kHz pwm period
+    OC2RS = PWM_PERIOD_TICKS; 
+    OC3RS = PWM_PERIOD_TICKS; 
+    OC4RS = PWM_PERIOD_TICKS; 
+    // The prescaler is left at the default 1:1 setting
 }
 
 void oc_start(void) {
-    OC1CON1bits.OCM = 0b111;
-    OC2CON1bits.OCM = 0b111;
+    OC1CON1bits.OCM = 0b110;        // Edge-aligned mode
+    OC2CON1bits.OCM = 0b110;
+    OC3CON1bits.OCM = 0b110;
+    OC4CON1bits.OCM = 0b110;
 }
 
 void oc_stop(void) {
     OC1CON1bits.OCM = 0;
     OC2CON1bits.OCM = 0;
+    OC3CON1bits.OCM = 0;
+    OC4CON1bits.OCM = 0;
 }
 
 void oc1_set_duty(unsigned int duty_percent) { 
-    OC1R  = (PWM_PERIOD * duty_percent) / 100;  
+    OC1R  = (PWM_PERIOD_TICKS * duty_percent) / 100;  
 }
 
 void oc2_set_duty(unsigned int duty_percent) {  
-    OC2R  = (PWM_PERIOD * duty_percent) / 100;
+    OC2R  = (PWM_PERIOD_TICKS * duty_percent) / 100;
 }
 
-//void oc_pins_init(void) {
-////    // RD1
-////    RPOR0bits.RP65R = 0b010000;     // Remap
-////    TRISDbits.TRISD1 = 0;           // Set as output
-//
-//    // RD2
-//    RPOR1bits.RP66R = 0b010001;
-//    TRISDbits.TRISD2 = 0;
-//
-////    // RD3
-////    RPOR1bits.RP67R = 0b010010;
-////    TRISDbits.TRISD3 = 0;
-//
-//    // RD4
-//    RPOR2bits.RP68R = 0b010011;
-//    TRISDbits.TRISD4 = 0;
-//}
+void oc3_set_duty(unsigned int duty_percent) {  
+    OC3R  = (PWM_PERIOD_TICKS * duty_percent) / 100;
+}
+
+void oc4_set_duty(unsigned int duty_percent) {  
+    OC4R  = (PWM_PERIOD_TICKS * duty_percent) / 100;
+}
+
+void oc_pins_init(void) {
+    // RD1
+    RPOR0bits.RP65R = 0b010000;     // Remap
+    TRISDbits.TRISD1 = 0;           // Set as output
+
+    // RD2
+    RPOR1bits.RP66R = 0b010001;
+    TRISDbits.TRISD2 = 0;
+
+    // RD3
+    RPOR1bits.RP67R = 0b010010;
+    TRISDbits.TRISD3 = 0;
+
+    // RD4
+    RPOR2bits.RP68R = 0b010011;
+    TRISDbits.TRISD4 = 0;
+}
 
 
 

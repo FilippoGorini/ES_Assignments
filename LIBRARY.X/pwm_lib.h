@@ -69,7 +69,9 @@ void oc_start(void);
 void oc_stop(void);
 void oc1_set_duty(unsigned int duty_percent);
 void oc2_set_duty(unsigned int duty_percent);
-//void oc_pins_init(void);
+void oc3_set_duty(unsigned int duty_percent);
+void oc4_set_duty(unsigned int duty_percent);
+void oc_pins_init(void);
 
 #ifdef	__cplusplus
 extern "C" {
