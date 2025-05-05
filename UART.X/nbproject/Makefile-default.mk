@@ -89,26 +89,26 @@ MP_LINKER_FILE_OPTION=,--script=p33EP512MU810.gld
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: compile
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-${OBJECTDIR}/main2.o: main2.c  .generated_files/flags/default/caefd4c84db52b9e07308160eebea1b4983cf45c .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
+${OBJECTDIR}/main2.o: main2.c  .generated_files/flags/default/38325c19af9e4921c8037d43c78612ee4f7fb9bd .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/main2.o.d 
 	@${RM} ${OBJECTDIR}/main2.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  main2.c  -o ${OBJECTDIR}/main2.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/main2.o.d"      -g -D__DEBUG   -mno-eds-warn  -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/ring_buffer.o: ring_buffer.c  .generated_files/flags/default/5c247c01ffcb16ccbe0458196a737543f86adc16 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
+${OBJECTDIR}/ring_buffer.o: ring_buffer.c  .generated_files/flags/default/195836d61e0de09f955d8fa8557ea5ef4d885e8c .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/ring_buffer.o.d 
 	@${RM} ${OBJECTDIR}/ring_buffer.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ring_buffer.c  -o ${OBJECTDIR}/ring_buffer.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/ring_buffer.o.d"      -g -D__DEBUG   -mno-eds-warn  -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
 else
-${OBJECTDIR}/main2.o: main2.c  .generated_files/flags/default/8f9222c4cea107b219da1a912039182b67367fc8 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
+${OBJECTDIR}/main2.o: main2.c  .generated_files/flags/default/6330c739832bf40076b4c63714480cedb26e3635 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/main2.o.d 
 	@${RM} ${OBJECTDIR}/main2.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  main2.c  -o ${OBJECTDIR}/main2.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/main2.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/ring_buffer.o: ring_buffer.c  .generated_files/flags/default/f506cf9164710d86f8756107508371373923d433 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
+${OBJECTDIR}/ring_buffer.o: ring_buffer.c  .generated_files/flags/default/6753da529ebdda2e46bf45a232b02f3138675431 .generated_files/flags/default/da39a3ee5e6b4b0d3255bfef95601890afd80709
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/ring_buffer.o.d 
 	@${RM} ${OBJECTDIR}/ring_buffer.o 
