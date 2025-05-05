@@ -32,9 +32,9 @@
 #define	PWM_LIB_H
 
 #include <xc.h> // include processor files - each processor file is guarded. 
-#include <config.h>
 
 // TODO Insert appropriate #include <>
+#include "config.h"
 
 // TODO Insert C++ class definitions if appropriate
 
@@ -63,6 +63,13 @@
  */
 // TODO Insert declarations or function prototypes (right here) to leverage 
 // live documentation
+
+void oc_init(void); 
+void oc_start(void);
+void oc_stop(void);
+void oc1_set_duty(unsigned int duty_percent);
+void oc2_set_duty(unsigned int duty_percent);
+//void oc_pins_init(void);
 
 #ifdef	__cplusplus
 extern "C" {

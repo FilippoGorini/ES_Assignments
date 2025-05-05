@@ -90,6 +90,14 @@
 // MAGNETOMETER
 #define MAG_AVG_SAMPLES 5
 
+// PWM OC
+#define PWMA LATDbits.LATD1 
+#define PWMB LATDbits.LATD2
+#define PWMC LATDbits.LATD3 
+#define PWMD LATDbits.LATD4 
+#define PWM_FREQ 10000UL
+#define PWM_PERIOD (FCY/PWM_FREQ)
+
 // Comment a function and leverage automatic documentation with slash star star
 /**
     <p><b>Function prototype:</b></p>

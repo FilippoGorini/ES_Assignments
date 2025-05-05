@@ -3,6 +3,7 @@
 #include "general_purpose_lib.h"
 #include "timer_lib.h"
 #include "spi_lib.h"
+#include "pwm_lib.h"
 
 
 int Buffer_Init(volatile CircularBuffer* cb, volatile char* buf_ptr, unsigned int size) {
@@ -142,4 +143,76 @@ void mag_update_readings(MagDataBuffer* mb) {
     mag_read_axes(raw_axes);  
     // Update MagDataBuffer pointed to by mb with the new measurements
     MagDataBuffer_Write(mb, raw_axes[0], raw_axes[1], raw_axes[2]);
+}
+
+void move_forward(void) {
+    RPOR0bits.RP65R = 0b000000;
+    RPOR1bits.RP66R = 0b010000;     // OC1 ---> PWM B
+    RPOR1bits.RP67R = 0b000000;
+    RPOR2bits.RP68R = 0b010000;     // OC1 ---> PWM D
+    PWMA = 0;
+    PWMC = 0;
+}
+
+void move_backward(void) {
+    RPOR0bits.RP65R = 0b010000;     // OC1 ---> PWM A
+    RPOR1bits.RP66R = 0b000000;
+    RPOR1bits.RP67R = 0b010000;     // OC1 ---> PWM C
+    RPOR2bits.RP68R = 0b000000;
+    PWMB = 0;
+    PWMD = 0;
+}
+
+void rotate_right(void) {
+    RPOR0bits.RP65R = 0b000000;
+    RPOR1bits.RP66R = 0b010000;     // OC1 ---> PWM B
+    RPOR1bits.RP67R = 0b010000;     // OC1 ---> PWM C
+    RPOR2bits.RP68R = 0b000000;
+    PWMA = 0;
+    PWMD = 0;
+}
+
+void rotate_left(void) {
+    RPOR0bits.RP65R = 0b010000;     // OC1 ---> PWM A
+    RPOR1bits.RP66R = 0b000000;
+    RPOR1bits.RP67R = 0b000000;
+    RPOR2bits.RP68R = 0b010000;     // OC1 ---> PWM D
+    PWMB = 0;
+    PWMC = 0;
+}
+
+void turn_right_forward(void) {
+    RPOR0bits.RP65R = 0b000000;
+    RPOR1bits.RP66R = 0b010000;     // OC1 ---> PWM B
+    RPOR1bits.RP67R = 0b000000;
+    RPOR2bits.RP68R = 0b010001;     // OC2 ---> PWM D
+    PWMA = 0;
+    PWMC = 0;
+}
+
+void turn_left_forward(void) {
+    RPOR0bits.RP65R = 0b000000;
+    RPOR1bits.RP66R = 0b010001;     // OC2 ---> PWM B
+    RPOR1bits.RP67R = 0b000000;
+    RPOR2bits.RP68R = 0b010000;     // OC1 ---> PWM D
+    PWMA = 0;
+    PWMC = 0;
+}
+
+void turn_right_backward(void) {
+    RPOR0bits.RP65R = 0b010000;     // OC1 ---> PWM A
+    RPOR1bits.RP66R = 0b000000;
+    RPOR1bits.RP67R = 0b010001;     // OC2 ---> PWM C
+    RPOR2bits.RP68R = 0b000000;
+    PWMB = 0;
+    PWMD = 0;
+}
+
+void turn_left_backward(void) {
+    RPOR0bits.RP65R = 0b010001;     // OC2 ---> PWM A
+    RPOR1bits.RP66R = 0b000000;
+    RPOR1bits.RP67R = 0b010000;     // OC1 ---> PWM C
+    RPOR2bits.RP68R = 0b000000;
+    PWMB = 0;
+    PWMD = 0;
 }

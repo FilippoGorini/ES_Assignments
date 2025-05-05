@@ -38,6 +38,7 @@
 #include "general_purpose_lib.h"
 #include "timer_lib.h"
 #include "spi_lib.h"
+#include "pwm_lib.h"
 
 // TODO Insert C++ class definitions if appropriate
 
@@ -97,6 +98,14 @@ void algorithm(void);
 void mag_sus2act(void);
 void mag_read_axes(int* axes_ptr);
 void mag_update_readings(MagDataBuffer* mb);
+void move_forward(void);
+void move_backward(void);
+void rotate_right(void);
+void rotate_left(void);
+void turn_right_forward(void);
+void turn_left_forward(void);
+void turn_right_backward(void);
+void turn_left_backward(void);
 
 #ifdef	__cplusplus
 extern "C" {
