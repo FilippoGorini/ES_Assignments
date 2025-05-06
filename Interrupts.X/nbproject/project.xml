@@ -7,7 +7,9 @@
             <creation-uuid>c1d8ade8-bea3-4736-815c-c77c65e54bf2</creation-uuid>
             <make-project-type>0</make-project-type>
             <sourceEncoding>ISO-8859-1</sourceEncoding>
-            <make-dep-projects/>
+            <make-dep-projects>
+                <make-dep-project>../LIBRARY.X</make-dep-project>
+            </make-dep-projects>
             <sourceRootList>
                 <sourceRootElem>.</sourceRootElem>
             </sourceRootList>

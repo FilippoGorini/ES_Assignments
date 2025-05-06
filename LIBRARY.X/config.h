@@ -81,6 +81,10 @@
 #define LED1 LATAbits.LATA0
 #define LED2 LATGbits.LATG9
 
+// BUTTONS
+#define BUTTON1 PORTEbits.RE8
+#define BUTTON2 PORTEbits.RE9
+
 // LIGHTS
 #define LEDL LATBbits.LATB8 
 #define LEDR LATFbits.LATF1

@@ -92,6 +92,7 @@ void MagDataBuffer_Write(MagDataBuffer* mb, int x, int y, int z);
 void MagDataBuffer_Average(MagDataBuffer* mb, int* avg_x, int* avg_y, int* avg_z);
 void set_digital_mode(void);
 void leds_init(void);
+void buttons_init(void);
 void lights_init(void);
 void global_interrupt_enable(void);
 void algorithm(void);

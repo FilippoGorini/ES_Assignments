@@ -88,6 +88,12 @@ void leds_init(void) {
     LED2 = 0;
 }
 
+void buttons_init(void) {
+    // Set input mode for the buttons
+    TRISEbits.TRISE8 = 1;
+    TRISEbits.TRISE9 = 1;    
+}
+
 void lights_init(void) {
     // Set output mode
     TRISBbits.TRISB8 = 0;

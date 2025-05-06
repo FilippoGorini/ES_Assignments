@@ -3,12 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-<<<<<<< HEAD
             <file>file:/D:/philg/Documenti/UNI/REPOs/ES_Assignments/ADC.X/main1.c</file>
-=======
-            <file>file:/C:/Users/smuss/Documents/Università/Magistrale/I%20ANNO/Embedded%20Systems/Code/ES_Assignments/ADC.X/main2.c</file>
-            <file>file:/C:/Users/smuss/Documents/Università/Magistrale/I%20ANNO/Embedded%20Systems/Code/ES_Assignments/ADC.X/main1.c</file>
->>>>>>> dcd7d64 (EX_2 ADC: write on the UART the value 2.34, as if it didn't read the value of sensor. Sensor is plug on BUS1)
+            <file>file:/D:/philg/Documenti/UNI/REPOs/ES_Assignments/ADC.X/main2.c</file>
         </group>
     </open-files>
 </project-private>
