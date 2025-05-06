@@ -18,6 +18,7 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>main1.c</itemPath>
+      <itemPath>main2.c</itemPath>
     </logicalFolder>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
@@ -41,6 +42,23 @@
       <compileType>
         <linkerTool>
           <linkerLibItems>
+            <linkerLibProjectItem>
+              <makeArtifact PL="../LIBRARY.X"
+                            CT="3"
+                            CN="default"
+                            AC="true"
+                            BL="true"
+                            WD="../LIBRARY.X"
+                            BC="${MAKE}  -f Makefile CONF=default"
+                            DBC="${MAKE}  -f Makefile CONF=default TYPE_IMAGE=DEBUG_RUN"
+                            CC="rm -rf &quot;build/default&quot; &quot;dist/default&quot;"
+                            OP="dist/default/production/LIBRARY.X.a"
+                            DOP="dist/default/debug/LIBRARY.X.a"
+                            FL="dist/default/production/LIBRARY.X.a"
+                            PD="dist/default/production/LIBRARY.X.a"
+                            DD="dist/default/debug/LIBRARY.X.a">
+              </makeArtifact>
+            </linkerLibProjectItem>
           </linkerLibItems>
         </linkerTool>
         <archiverTool>
@@ -193,6 +211,20 @@
         <property key="relaxed-math" value="false"/>
         <property key="save-temps" value="false"/>
       </C30Global>
+      <item path="main1.c" ex="true" overriding="false">
+        <C30>
+        </C30>
+        <C30-AR>
+        </C30-AR>
+        <C30-AS>
+        </C30-AS>
+        <C30-CO>
+        </C30-CO>
+        <C30-LD>
+        </C30-LD>
+        <C30Global>
+        </C30Global>
+      </item>
     </conf>
   </confs>
 </configurationDescriptor>
